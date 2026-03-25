@@ -191,3 +191,5 @@ db.sqlite3
 *.iml
 .vscode/
 .idea
+
+./users/migrations
