@@ -78,35 +78,35 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# Local Database MSSQLExpress
-# load_dotenv()
-# USER = os.getenv('MS_SQL_USER')
-# PASSWORD = os.getenv('MS_SQL_KEY')
-# HOST = os.getenv('MS_SQL_SERVER')
-# DATABASE = os.getenv('MS_SQL_DATABASE')
-# PAD_DATABASE = os.getenv('MS_SQL_PAD_DATABASE')
-# DRIVER = os.getenv('MS_SQL_DRIVER')
-#
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': DATABASE,
-#         'USER': USER,
-#         'PASSWORD': PASSWORD,
-#         'HOST': HOST,
-#         'PORT': '',
-#         'OPTIONS': {
-#             'driver': DRIVER,
-#         }
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+# Local Database MSSQLExpress
+load_dotenv()
+USER = os.getenv('MS_SQL_USER')
+PASSWORD = os.getenv('MS_SQL_KEY')
+HOST = os.getenv('MS_SQL_SERVER')
+DATABASE = os.getenv('MS_SQL_DATABASE')
+PAD_DATABASE = os.getenv('MS_SQL_PAD_DATABASE')
+DRIVER = os.getenv('MS_SQL_DRIVER')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': DATABASE,
+        'USER': USER,
+        'PASSWORD': PASSWORD,
+        'HOST': HOST,
+        'PORT': '',
+        'OPTIONS': {
+            'driver': DRIVER,
+        }
+    }
+}
 
 
 # Password validation
@@ -131,9 +131,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -149,3 +149,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'users.User'
