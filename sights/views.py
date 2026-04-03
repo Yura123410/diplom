@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from sights.forms import SightForm
+from sights.forms import SightForm, CategoryForm
 from sights.models import Sight, Category
 
 
@@ -20,14 +20,6 @@ def sight_list(request):
         'title': 'Все достопримечательности',
     }
     return render(request, 'sights/sight_list.html', context)
-
-
-def category_list(request):
-    context = {
-        'objects_list': Category.objects.all(),
-        'title': 'Категории',
-    }
-    return render(request, 'sights/category_list.html', context)
 
 
 def sight_detail(request, pk: int):
@@ -49,7 +41,28 @@ def sight_create_view(request):
         'title': 'Добавить достопримечательность',
         'form': SightForm()
     }
-    return render(request, 'sights/create.html', context)
+    return render(request, 'sights/create_sights.html', context)
+
+
+def category_list(request):
+    context = {
+        'objects_list': Category.objects.all(),
+        'title': 'Категории',
+    }
+    return render(request, 'sights/category_list.html', context)
+
+
+def category_create_view(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('sights:category_list'))
+    context = {
+        'title': 'Добавить категорию',
+        'form': CategoryForm()
+    }
+    return render(request, 'sights/create_category.html', context)
 
 
 def category_detail(request, pk: int):

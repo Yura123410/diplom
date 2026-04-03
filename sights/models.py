@@ -14,6 +14,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         ordering = ['name']
 
+
 class Sight(models.Model):
     name = models.CharField(verbose_name='Название', max_length=200)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория', related_name='sights')
