@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Подробнее</title>
-</head>
-<body>
+{% extends 'sights/base.html' %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="col-md-4">
+    <div class="card md-4 box-shadow">
+        <div>
+            {% if sight.image %}
+            <img src="{{ sight.image.url }}" class="card-img-top" alt="{{ sight.name }}">
+            {% endif %}
+        </div>
+        <img class="card-img-top">
+        <div class="card-body">
+            <p class="card-text"><strong>Название:</strong> {{ sight.name|title }}</p>
+            <span class="text_muted"><strong>Категория:</strong> {{ sight.category|default:"-" }}</span><br>
+            <span class="text_muted"><strong>Полное описание:</strong> {{ sight.description|default:"Без описания" }}</span><br>
+            <span class="text_muted"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</span><br>
+            <span class="text_muted"><strong>Часы работы:</strong> {{ sight.working_hours|default:"Не указано" }}</span><br>
+            <span class="text_muted"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</span><br>
+            <span class="text_muted"><strong>Просмотры:</strong> {{ sight.views }}</span><br>
+        </div>
+        <div class="card-footer">
+            {% if user == object.owner %}
+            <a class="btn btn-link" href="{% url 'sights:sight_update' object.pk %}">Изменить</a>
+            {% endif %}
+            <a class="btn btn-link" href="{% url 'sights:sight_list' %}">Назад к списку</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
