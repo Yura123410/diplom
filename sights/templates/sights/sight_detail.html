@@ -2,28 +2,47 @@
 
 {% block content %}
 
-<div class="col-md-4">
-    <div class="card md-4 box-shadow">
-        <div>
-            {% if sight.image %}
-            <img src="{{ sight.image.url }}" class="card-img-top" alt="{{ sight.name }}">
-            {% endif %}
-        </div>
-        <img class="card-img-top">
-        <div class="card-body">
-            <p class="card-text"><strong>Название:</strong> {{ sight.name|title }}</p>
-            <span class="text_muted"><strong>Категория:</strong> {{ sight.category|default:"-" }}</span><br>
-            <span class="text_muted"><strong>Полное описание:</strong> {{ sight.description|default:"Без описания" }}</span><br>
-            <span class="text_muted"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</span><br>
-            <span class="text_muted"><strong>Часы работы:</strong> {{ sight.working_hours|default:"Не указано" }}</span><br>
-            <span class="text_muted"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</span><br>
-            <span class="text_muted"><strong>Просмотры:</strong> {{ sight.views }}</span><br>
-        </div>
-        <div class="card-footer">
-            {% if user == object.owner %}
-            <a class="btn btn-link" href="{% url 'sights:sight_update' object.pk %}">Изменить</a>
-            {% endif %}
-            <a href="{% url 'sights:category' sight.category.pk %}" class="btn btn-primary">Назад</a>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4 box-shadow">
+                <div class="row g-0">
+                    {% if sight.image %}
+                    <div class="col-md-5">
+                        <img src="{{ sight.image.url }}" class="img-fluid rounded-start" alt="{{ sight.name }}" style="height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ sight.name|title }}</h3>
+                            <p class="card-text"><strong>Категория:</strong> {{ sight.category|default:"-" }}</p>
+                            <p class="card-text"><strong>Полное описание:</strong> {{ sight.full_description|default:"Без описания" }}</p>
+                            <p class="card-text"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Просмотры:</strong> {{ sight.views_count }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ sight.name|title }}</h3>
+                            <p class="card-text"><strong>Категория:</strong> {{ sight.category|default:"-" }}</p>
+                            <p class="card-text"><strong>Полное описание:</strong> {{ sight.full_description|default:"Без описания" }}</p>
+                            <p class="card-text"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Просмотры:</strong> {{ sight.views_count }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if user == object.owner %}
+                    <a class="btn btn-link" href="{% url 'sights:sight_update' object.pk %}">Изменить</a>
+                    {% endif %}
+                    <a href="{% url 'sights:category' sight.category.pk %}" class="btn btn-primary">Назад</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
