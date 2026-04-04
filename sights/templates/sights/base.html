@@ -11,11 +11,27 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-image: url('{% static "gde-posmotret-severnoe-siyanie-v-murmanske.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
         }
 
-        /* Стиль для collapse меню */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
         .collapse-menu {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(0, 0, 0, 0.85);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
@@ -30,45 +46,84 @@
             color: #ffd700 !important;
         }
 
-        /* Стиль для навбара */
         .navbar-custom {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%) !important;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: rgba(44, 62, 80, 0.95) !important;
         }
 
         .navbar-toggler {
             border: 2px solid rgba(255,255,255,0.5);
             transition: all 0.3s ease;
+            background: #2c3e50;
         }
 
         .navbar-toggler:hover {
             transform: rotate(90deg);
         }
 
-        /* Стиль для jumbotron */
-        .jumbotron-custom {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 0;
-            margin-bottom: 0;
-            padding: 4rem 2rem;
+        .jumbotron-custom,
+        .jumbotron {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-radius: 15px;
+            margin: 20px auto;
+            padding: 3rem 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
-        .jumbotron-custom h1 {
-            color: #2c3e50;
+        .jumbotron h1,
+        .jumbotron-heading {
+            color: #1a252f !important;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
         }
 
-        /* Анимация для альбома */
         .album {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            margin: 20px 0;
+            padding: 20px 0;
         }
 
-        /* Стиль для футера */
+        .card {
+            background: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title,
+        .card-text {
+            color: #333 !important;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
         .footer-custom {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 2rem 0;
+            background: rgba(44, 62, 80, 0.95);
+            border-radius: 15px 15px 0 0;
+            margin-top: 30px;
         }
 
         .footer-custom a {
@@ -81,7 +136,6 @@
             text-decoration: none;
         }
 
-        /* Кнопка "Back to top" */
         .back-to-top {
             display: inline-block;
             background: #667eea;
@@ -98,6 +152,24 @@
             transform: translateY(-3px);
             color: white;
         }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .collapse-menu .text-white,
+        .navbar-brand strong {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .album a:not(.btn) {
+            color: #667eea;
+        }
+
+        .album a:not(.btn):hover {
+            color: #764ba2;
+        }
     </style>
 </head>
 
@@ -109,7 +181,7 @@
             <div class="row">
                 <div class="col-sm-8 col-md-7 py-4">
                     <h4 class="text-white mb-0">Достопримечательности и развлечения, которые нельзя пропустить!</h4>
-                    <p class="text-white-50 mt-2">Откройте для себя лучшие места вашего города</p>
+                    <p class="text-white mt-3">Откройте для себя лучшие места вашего города</p>
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4">
                     <h4 class="text-white border-bottom pb-2 d-inline-block">Меню</h4>
@@ -120,7 +192,7 @@
                                             class="text-white text-decoration-none">Добавить достопримечательность</a>
                         </li>
                         <li class="mb-2"><a href="{% url 'sights:category_create' %}"
-                                            class="text-white text-decoration-none"">Добавить категорию</a></li>
+                                            class="text-white text-decoration-none">Добавить категорию</a></li>
                         {% endif %}
                         <li class="mb-2"><a href="{% url 'sights:index' %}" class="text-white text-decoration-none">Главная</a>
                         </li>
@@ -128,7 +200,6 @@
                                             class="text-white text-decoration-none">Достопримечательности</a></li>
                         <li class="mb-2"><a href="{% url 'sights:category_list' %}"
                                             class="text-white text-decoration-none">Категории</a></li>
-
                     </ul>
                 </div>
             </div>
@@ -144,38 +215,43 @@
                 <strong>👋 {{ user.first_name }} {{ user.last_name }}, Добро пожаловать!</strong>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
-                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation"
+                    style="display: flex; align-items: center; gap: 8px;">
+                <span>☰</span>
             </button>
         </div>
     </div>
 </header>
-<main role="main">
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="jumbotron-heading">{{ title }}</h1>
-        </div>
-    </section>
 
-    <div class="album py-5">
-        <div class="container">
-            {% block content %}
-            {% endblock %}
+<main role="main">
+    <div class="container">
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1 class="jumbotron-heading">{{ title }}</h1>
+            </div>
+        </section>
+
+        <div class="album py-5">
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 </main>
+
 <footer class="footer-custom">
     <div class="text-center">
-        <a href="#" class="back-to-top">↑ Наверх</a>
+        <a href="#" class="back-to-top mt-3">↑ Наверх</a>
         <p class="mt-3 mb-0">&copy; 2026 Все права защищены</p>
     </div>
 </footer>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/holder.min.js' %}"></script>
 </body>
 </html>
