@@ -36,13 +36,38 @@ def sight_create_view(request):
         form = SightForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('sight_list.html'))
+            return HttpResponseRedirect(reverse('sights:index'))
     context = {
         'title': 'Добавить достопримечательность',
         'form': SightForm()
     }
     return render(request, 'sights/create_sights.html', context)
 
+def sights_update_view(request, pk):
+    sight_object = get_object_or_404(Sight, pk=pk)
+    if request.method == 'POST':
+        form = SightForm(request.POST, request.FILES, instance=sight_object)
+        if form.is_valid():
+            sight_object = form.save()
+            sight_object.save()
+            return HttpResponseRedirect(reverse('sights:sight_detail', args={pk: pk}))
+    context = {
+        'title': 'Изменить',
+        'object': sight_object,
+        'form': SightForm(instance=sight_object)
+    }
+    return render(request, 'sights/create_sights.html', context)
+
+def sights_delete_view(request, pk):
+    sight_object = get_object_or_404(Sight, pk=pk)
+    if request.method == 'POST':
+        sight_object.delete()
+        return HttpResponseRedirect(reverse('sights:sight_list'))
+    context = {
+        'title': 'Удалить достопримечательность',
+        'object': sight_object,
+    }
+    return render(request, 'sights/sights_delete.html', context)
 
 def category_list(request):
     context = {
@@ -57,7 +82,7 @@ def category_create_view(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('sights:category_list'))
+            return HttpResponseRedirect(reverse('sights:index'))
     context = {
         'title': 'Добавить категорию',
         'form': CategoryForm()
