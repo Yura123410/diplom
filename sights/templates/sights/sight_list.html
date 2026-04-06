@@ -1,9 +1,33 @@
 {% extends 'sights/base.html' %}
-
+{% load static %}
 {% block content %}
+
 <div class="row">
-    {% for object in objects%}
-        {% include 'sights/includes/inc_sights.html' with object=object %}
+    {% for object in objects_list %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 box-shadow mt-3">
+            {% if object.image %}
+            <img class="card-img-top"
+                src="{{ object.image.url }}"
+                width="300"
+                height="320"
+                alt="{{ object.name }}">
+            {% else %}
+            <img class="card-img-top"
+                src="{% static 'images/no-image.jpg' %}"
+                width="300"
+                height="320"
+                alt="Нет изображения">
+            {% endif %}
+            <div class="card-body">
+                <p class="card-text">{{ object.name|title }}</p>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-primary" href="{% url 'sights:sight_detail' object.pk %}">Подробнее</a>
+            </div>
+        </div>
+    </div>
     {% endfor %}
 </div>
+
 {% endblock %}
