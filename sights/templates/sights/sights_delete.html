@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sights/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card" style="background: rgba(255,255,255,0.95); padding: 2rem; border-radius: 15px;">
+            <div class="text-center mb-4">
+                <h2 class="mb-4" style="color: #1a252f; font-weight: 700;">Удаление достопримечательности</h2>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Внимание! Это действие необратимо.
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if object.image %}
+                <div class="text-center mb-4">
+                    <img src="{{ object.image.url }}" class="img-fluid rounded" alt="{{ object.name }}"
+                         style="max-height: 200px; object-fit: cover; border-radius: 10px;">
+                </div>
+                {% endif %}
+
+                <div class="card-body text-center">
+                    <h4 class="mb-3">{{ object.name }}</h4>
+                    <p class="text-muted">{{ object.description|truncatewords:30 }}</p>
+                    <p class="text-danger font-weight-bold mt-3">
+                        Вы уверены, что хотите удалить достопримечательность <strong>"{{ object.name }}"</strong>?
+                    </p>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-danger" style="padding: 8px 25px; border-radius: 25px;">
+                        Да, удалить
+                    </button>
+                    <a href="{% url 'sights:sight_list' %}" class="btn btn-secondary" style="padding: 8px 25px; border-radius: 25px;">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
