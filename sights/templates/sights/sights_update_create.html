@@ -7,7 +7,6 @@
             <h2 class="mb-4" style="color: #1a252f; font-weight: 700;">Добавить достопримечательность</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-
                 {% for field in form %}
                 <div class="form-group mb-3">
                     <label style="font-weight: 500; color: #333;">

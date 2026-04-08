@@ -23,9 +23,10 @@ class Sight(models.Model):
     address = models.CharField(verbose_name='Адрес', max_length=300)
     image = models.ImageField(verbose_name='Изображение', upload_to='sights/', **NULLABLE)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, **NULLABLE)
-    opening_hours = models.CharField(verbose_name='Часы работы', max_length=200, **NULLABLE)
-    ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100, **NULLABLE)
+    opening_hours = models.CharField(verbose_name='Часы работы', max_length=200,default='Не указано', **NULLABLE)
+    ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100,default='Не указано', **NULLABLE)
     views_count = models.IntegerField(verbose_name='Просмотры', default=0)
+
 
     def __str__(self):
         return self.name

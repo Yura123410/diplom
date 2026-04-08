@@ -28,7 +28,7 @@ def sight_detail(request, pk: int):
         'sight': sight,
         'title': sight.name,
     }
-    return render(request, 'sights/sight_detail.html', context)
+    return render(request, 'sights/sights_detail.html', context)
 
 
 def sight_create_view(request):
@@ -41,7 +41,7 @@ def sight_create_view(request):
         'title': 'Добавить достопримечательность',
         'form': SightForm()
     }
-    return render(request, 'sights/create_sights.html', context)
+    return render(request, 'sights/sights_update_create.html', context)
 
 def sights_update_view(request, pk):
     sight_object = get_object_or_404(Sight, pk=pk)
@@ -50,13 +50,13 @@ def sights_update_view(request, pk):
         if form.is_valid():
             sight_object = form.save()
             sight_object.save()
-            return HttpResponseRedirect(reverse('sights:sight_detail', args={pk: pk}))
+            return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk, )))
     context = {
-        'title': 'Изменить',
+        'title': 'Изменить достопримечательность',
         'object': sight_object,
         'form': SightForm(instance=sight_object)
     }
-    return render(request, 'sights/create_sights.html', context)
+    return render(request, 'sights/sights_update_create.html', context)
 
 def sights_delete_view(request, pk):
     sight_object = get_object_or_404(Sight, pk=pk)
@@ -87,7 +87,7 @@ def category_create_view(request):
         'title': 'Добавить категорию',
         'form': CategoryForm()
     }
-    return render(request, 'sights/create_category.html', context)
+    return render(request, 'sights/category_create.html', context)
 
 
 def category_detail(request, pk: int):

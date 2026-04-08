@@ -9,7 +9,8 @@
                 <div class="row g-0">
                     {% if sight.image %}
                     <div class="col-md-5">
-                        <img src="{{ sight.image.url }}" class="img-fluid rounded-start" alt="{{ sight.name }}" style="height: 100%; object-fit: cover;">
+                        <img src="{{ sight.image.url }}" class="img-fluid rounded-start" alt="{{ sight.name }}"
+                             style="height: 100%; object-fit: cover;">
                     </div>
                     <div class="col-md-7">
                         <div class="card-body">
@@ -36,11 +37,14 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="card-footer">
-                    {% if user == object.owner %}
-                    <a class="btn btn-link" href="{% url 'sights:sight_update' object.pk %}">Изменить</a>
-                    {% endif %}
-                    <a href="{% url 'sights:category' sight.category.pk %}" class="btn btn-primary">Назад</a>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        <a class="btn btn-primary" href="{% url 'sights:category' sight.category.pk %}">Назад</a>
+                        <a class="btn btn-primary" href="{% url 'sights:sights_update' sight.pk %}">Изменить</a>
+                    </div>
+                    <div>
+                        <a class="btn btn-danger" href="{% url 'sights:sights_delete' sight.pk %}">Удалить</a>
+                    </div>
                 </div>
             </div>
         </div>
