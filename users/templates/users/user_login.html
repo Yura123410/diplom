@@ -1,0 +1,66 @@
+{% extends 'sights/base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card" style="background: rgba(255,255,255,0.95); border-radius: 15px;">
+            <div class="card-body p-4">
+                <h3 class="mb-4" style="color: #1a252f; font-weight: 600;">Введите данные для входа</h3>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group mb-3">
+                        <label style="font-weight: 500; color: #333;">
+                            {{ field.label }}
+                            {% if field.field.required %}<span style="color: red;">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn"
+                                style="background: #667eea; color: white; padding: 10px 30px; border-radius: 25px; border: none; transition: all 0.3s ease;">
+                            Войти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+</style>
+
+{% endblock %}
