@@ -25,9 +25,9 @@ class Command(BaseCommand):
                 'is_superuser': False,
                 'is_active': True,
             },
-            'user': {
-                'email': 'user@web.top',
-                'role': 'user',
+            'users': {
+                'email': 'users@web.top',
+                'role': 'users',
                 'first_name': 'User',
                 'last_name': 'Userov',
                 'is_staff': False,
