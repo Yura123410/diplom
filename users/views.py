@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
@@ -49,3 +49,7 @@ def user_profile_view(request):
         'title': f'Ваш профиль {user_object}'
     }
     return render(request, 'users/user_profile_read_only.html', context=context)
+
+def user_logout_view(request):
+    logout(request)
+    return redirect('sights:index')

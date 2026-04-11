@@ -216,6 +216,9 @@
                         <li class="mb-2"><a href="{% url 'users:user_profile' %}"
                                             class="text-white text-decoration-none">Профиль</a>
                         </li>
+                        <li class="mb-2"><a href="{% url 'users:user_logout' %}"
+                                            class="text-white text-decoration-none">Выход</a>
+                        </li>
                         {% else %}
                         <li class="mb-2"><a href="{% url 'users:user_login' %}" class="text-white text-decoration-none">Вход</a>
                         </li>

@@ -7,18 +7,22 @@
 
 <div class="row">
     {% for sight in sights %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ sight.image|sights_media }}" class="card-img-top" alt="{{ sight.name }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ sight.name }}</h5>
-                    <a href="{% url 'sights:sight_detail' sight.pk %}" class="btn btn-primary">Подробнее</a>
-                    <a href="{% url 'sights:index' %}" class="btn btn-primary">Назад</a>
-                </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img src="{{ sight.image|sights_media }}" class="card-img-top" alt="{{ sight.name }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ sight.name }}</h5>
+                <a href="{% url 'sights:sight_detail' sight.pk %}" class="btn btn-primary">Подробнее</a>
             </div>
         </div>
+
+    </div>
+
     {% empty %}
-        <p>В этой категории пока нет достопримечательностей</p>
+    <p>В этой категории пока нет достопримечательностей</p>
     {% endfor %}
+</div>
+<div class="text-center mt-4">
+    <a href="{% url 'sights:index' %}" class="btn btn-primary">Назад</a>
 </div>
 {% endblock %}
