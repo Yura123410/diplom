@@ -1,4 +1,5 @@
 {% extends 'sights/base.html' %}
+{% load sights_tags %}
 
 {% block content %}
 <h1>{{ title }}</h1>
@@ -8,9 +9,7 @@
     {% for sight in sights %}
         <div class="col-md-4 mb-4">
             <div class="card">
-                {% if sight.image %}
-                    <img src="{{ sight.image.url }}" class="card-img-top" alt="{{ sight.name }}">
-                {% endif %}
+                <img src="{{ sight.image|sights_media }}" class="card-img-top" alt="{{ sight.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ sight.name }}</h5>
                     <a href="{% url 'sights:sight_detail' sight.pk %}" class="btn btn-primary">Подробнее</a>

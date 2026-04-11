@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from users.forms import UserRegisterForm, UserLoginForm
 
+
 def user_register_view(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
@@ -14,7 +15,7 @@ def user_register_view(request):
             new_user.save()
             return HttpResponseRedirect(reverse('sights:index'))
     else:
-        form = UserRegisterForm() # создаём экземпляр формы для GET запроса
+        form = UserRegisterForm()  # создаём экземпляр формы для GET запроса
 
     context = {
         'title': 'Создать аккаунт',
@@ -32,7 +33,7 @@ def user_login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return  HttpResponseRedirect(reverse('sights:index'))
+                    return HttpResponseRedirect(reverse('sights:index'))
                 return HttpResponse('Аккаунт неактивен')
             return HttpResponse('Нет такого пользователя!')
     context = {
@@ -40,3 +41,11 @@ def user_login_view(request):
         'form': UserLoginForm
     }
     return render(request, 'users/user_login.html', context=context)
+
+
+def user_profile_view(request):
+    user_object = request.user
+    context = {
+        'title': f'Ваш профиль {user_object}'
+    }
+    return render(request, 'users/user_profile_read_only.html', context=context)

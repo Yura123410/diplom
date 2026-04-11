@@ -167,6 +167,21 @@
         .album a:not(.btn):hover {
             color: #764ba2;
         }
+        .menu-simple {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .menu-simple span {
+            font-size: 1.3rem;
+        }
+
     </style>
 </head>
 
@@ -193,16 +208,20 @@
                         {% endif %}
                         <li class="mb-2"><a href="{% url 'sights:index' %}" class="text-white text-decoration-none">Главная</a>
                         </li>
-                        <li class="mb-2"><a href="{% url 'users:user_login' %}"
-                                            class="text-white text-decoration-none">Вход</a>
-                        </li>
-                        <li class="mb-2"><a href="{% url 'users:user_register' %}"
-                                            class="text-white text-decoration-none">Регистрация</a>
-                        </li>
                         <li class="mb-2"><a href="{% url 'sights:sight_list' %}"
                                             class="text-white text-decoration-none">Достопримечательности</a></li>
                         <li class="mb-2"><a href="{% url 'sights:category_list' %}"
                                             class="text-white text-decoration-none">Категории</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="mb-2"><a href="{% url 'users:user_profile' %}"
+                                            class="text-white text-decoration-none">Профиль</a>
+                        </li>
+                        {% else %}
+                        <li class="mb-2"><a href="{% url 'users:user_login' %}" class="text-white text-decoration-none">Вход</a>
+                        </li>
+                        <li class="mb-2"><a href="{% url 'users:user_register' %}"
+                                            class="text-white text-decoration-none">Регистрация</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -217,11 +236,16 @@
                 </svg>
                 <strong>👋 {{ user.first_name }} {{ user.last_name }}, Добро пожаловать!</strong>
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
-                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation"
-                    style="display: flex; align-items: center; gap: 8px;">
-                <span>☰</span>
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <div class="menu-simple">
+                    Меню →
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                        aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation"
+                        style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.5rem;">☰</span>
+                </button>
+            </div>
         </div>
     </div>
 </header>

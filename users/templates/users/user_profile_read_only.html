@@ -1,0 +1,25 @@
+{% extends 'sights/base.html' %}
+{% load user_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">Мой профиль</div>
+            <img class="card-img-top"
+                 src="{{ user.avatar|user_media }}"
+                 alt="Card image cap"
+                style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+            <div class="card-body">
+                <span class="card-text">Почта: {{user.email}}</span><br>
+                <span class="card-text">Имя: {{user.first_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Фамилия: {{user.last_name|default:"Не указано"}}</span><br>
+                <span class="card-text">Телефон: {{user.phone|default:"Не указано"}}</span><br>
+                <span class="card-text">Телеграм: {{user.telegram|default:"Не указано"}}</span><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
