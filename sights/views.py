@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from sights.forms import SightForm, CategoryForm
 from sights.models import Sight, Category
@@ -58,6 +59,7 @@ def sights_update_view(request, pk):
     }
     return render(request, 'sights/sights_update_create.html', context)
 
+@login_required(login_url='users:user_login')
 def sights_delete_view(request, pk):
     sight_object = get_object_or_404(Sight, pk=pk)
     if request.method == 'POST':
