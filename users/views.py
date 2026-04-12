@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
-from users.forms import UserRegisterForm, UserLoginForm
+from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm
 
 
 def user_register_view(request):
@@ -13,7 +13,7 @@ def user_register_view(request):
             new_user = form.save()
             new_user.set_password(form.cleaned_data['password'])
             new_user.save()
-            return HttpResponseRedirect(reverse('sights:index'))
+            return HttpResponseRedirect(reverse('users:user_login'))
     else:
         form = UserRegisterForm()  # создаём экземпляр формы для GET запроса
 
@@ -21,7 +21,7 @@ def user_register_view(request):
         'title': 'Создать аккаунт',
         'form': form
     }
-    return render(request, 'users/user_register.html', context=context)
+    return render(request, 'users/user_register_update.html', context=context)
 
 
 def user_login_view(request):
@@ -49,6 +49,21 @@ def user_profile_view(request):
         'title': f'Ваш профиль {user_object}'
     }
     return render(request, 'users/user_profile_read_only.html', context=context)
+
+def user_update_view(request):
+    user_object = request.user
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, request.FILES,instance=user_object)
+        if form.is_valid():
+            user_object = form.save()
+            user_object.save()
+            return HttpResponseRedirect(reverse('users:user_profile'))
+    context = {
+        'object': user_object,
+        'title': f'Изменить профиль {user_object}',
+        'form': UserUpdateForm(instance=user_object),
+    }
+    return render(request, 'users/user_register_update.html', context=context)
 
 def user_logout_view(request):
     logout(request)
