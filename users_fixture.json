@@ -1,0 +1,107 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$FY0VI3se5W0d0OEyNC7w6y$6EQ2fJgZjpWyLF2FpjmFvkepZvq16s+umJ3cE9AT/FU=",
+        "last_login": "2026-04-09T21:48:02.448Z",
+        "is_superuser": true,
+        "is_staff": true,
+        "date_joined": "2026-03-25T21:06:14.294Z",
+        "email": "admin@web.top",
+        "role": "admin",
+        "first_name": "Admin",
+        "last_name": "Adminov",
+        "avatar": "",
+        "phone": null,
+        "telegram": null,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$OUl4lMnjCGVZBIRUEAZS3U$Q3npsNsSb/CKfAYcXJxlHaRFspgyyblhdmlopJf+h4Q=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": true,
+        "date_joined": "2026-03-25T21:06:15.876Z",
+        "email": "moderator@web.top",
+        "role": "moderator",
+        "first_name": "Moder",
+        "last_name": "Moderov",
+        "avatar": "",
+        "phone": null,
+        "telegram": null,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$5AQIxLypVCmiV3U7GMEN8G$l1UwaA446a4yYY7zv+4JUbVVMEVK1O1KMxx19tSKRpM=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2026-03-25T21:06:17.398Z",
+        "email": "user@web.top",
+        "role": "user",
+        "first_name": "User",
+        "last_name": "Userov",
+        "avatar": "",
+        "phone": null,
+        "telegram": null,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$dtzAG3q3zMJu7IAi3wHeDb$5LmVZ9o4riKFb1DIvJlNZcc6RXOhiGnA07ZrVg24xOE=",
+        "last_login": "2026-04-12T08:41:17.152Z",
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2026-04-11T20:42:25.428Z",
+        "email": "yura@gmail.com",
+        "role": "users",
+        "first_name": "Юрий",
+        "last_name": "Юров",
+        "avatar": "users/219988.png",
+        "phone": "88005553535",
+        "telegram": "yuratg.name",
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$YgvfbcHxE9GgJeAj5LFSHQ$QmMKvCBz8l89fi1wT/Ucw3OV6uU070/AGJPy4zzEcAk=",
+        "last_login": "2026-04-12T09:14:43.330Z",
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2026-04-12T08:45:00.237Z",
+        "email": "yura3@gmail.com",
+        "role": "users",
+        "first_name": "Юрий3",
+        "last_name": "Юров3",
+        "avatar": "users/user-profile-icon-illustration-vector.jpg",
+        "phone": "89211234567",
+        "telegram": null,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
