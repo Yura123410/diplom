@@ -1,6 +1,8 @@
 from django import forms
-
+from django.contrib.auth.forms import PasswordChangeForm
 from users.models import User
+from users.validators import validate_password
+
 
 class UserRegisterForm(forms.ModelForm):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
@@ -12,6 +14,7 @@ class UserRegisterForm(forms.ModelForm):
 
     def clean_password2(self):
         cd = self.cleaned_data
+        validate_password(cd['password'])
         print(cd)
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Ошибка! Пароли не совпадают!')
@@ -32,3 +35,6 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'phone', 'telegram', 'avatar')
+
+class UserChangePasswordForm(PasswordChangeForm):
+    pass
