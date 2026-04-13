@@ -22,7 +22,7 @@ def sight_list(request):
     }
     return render(request, 'sights/sight_list.html', context)
 
-
+@login_required(login_url='users:user_login')
 def sight_detail(request, pk: int):
     sight = get_object_or_404(Sight, pk=pk)
     context = {
@@ -31,7 +31,7 @@ def sight_detail(request, pk: int):
     }
     return render(request, 'sights/sights_detail.html', context)
 
-
+@login_required(login_url='users:user_login')
 def sight_create_view(request):
     if request.method == 'POST':
         form = SightForm(request.POST, request.FILES)
@@ -44,6 +44,8 @@ def sight_create_view(request):
     }
     return render(request, 'sights/sights_update_create.html', context)
 
+
+@login_required(login_url='users:user_login')
 def sights_update_view(request, pk):
     sight_object = get_object_or_404(Sight, pk=pk)
     if request.method == 'POST':
@@ -51,13 +53,14 @@ def sights_update_view(request, pk):
         if form.is_valid():
             sight_object = form.save()
             sight_object.save()
-            return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk, )))
+            return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk,)))
     context = {
         'title': 'Изменить достопримечательность',
         'object': sight_object,
         'form': SightForm(instance=sight_object)
     }
     return render(request, 'sights/sights_update_create.html', context)
+
 
 @login_required(login_url='users:user_login')
 def sights_delete_view(request, pk):
@@ -71,6 +74,7 @@ def sights_delete_view(request, pk):
     }
     return render(request, 'sights/sights_delete.html', context)
 
+
 def category_list(request):
     context = {
         'objects_list': Category.objects.all(),
@@ -79,6 +83,7 @@ def category_list(request):
     return render(request, 'sights/category_list.html', context)
 
 
+@login_required(login_url='users:user_login')
 def category_create_view(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
