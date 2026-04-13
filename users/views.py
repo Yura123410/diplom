@@ -7,27 +7,28 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
+from django.views.generic import CreateView, UpdateView, DetailView, ListView
+from django.urls import reverse_lazy
+
+from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm, UserChangePasswordForm
 from users.services import send_register_email, send_new_password
 
 
-def user_register_view(request):
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-            send_register_email(new_user.email)
-            return HttpResponseRedirect(reverse('users:user_login'))
-    else:
-        form = UserRegisterForm()  # создаём экземпляр формы для GET запроса
-
-    context = {
-        'title': 'Создать аккаунт',
-        'form': form
+class UserRegisterView(CreateView):
+    model = User
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('users:user_login')
+    template_name = 'users/user_register_update.html'
+    extra_context = {
+        'title': 'Создать аккаунт'
     }
-    return render(request, 'users/user_register_update.html', context=context)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        send_register_email(self.object.email)
+        return super().form_valid(form)
 
 
 def user_login_view(request):
