@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$1200000$FY0VI3se5W0d0OEyNC7w6y$6EQ2fJgZjpWyLF2FpjmFvkepZvq16s+umJ3cE9AT/FU=",
-        "last_login": "2026-04-09T21:48:02.448Z",
+        "last_login": "2026-04-13T20:05:58.789Z",
         "is_superuser": true,
         "is_staff": true,
         "date_joined": "2026-03-25T21:06:14.294Z",
@@ -98,6 +98,27 @@
         "last_name": "Юров3",
         "avatar": "users/user-profile-icon-illustration-vector.jpg",
         "phone": "89211234567",
+        "telegram": null,
+        "is_active": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 6,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$CKznHFxqHeMf0vZW2LGpHr$LUAXqUBLqMX+A36Jn1lRL9tSsHCIGmNXu984VVc+M0I=",
+        "last_login": "2026-04-13T19:57:54.803Z",
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2026-04-13T18:46:56.578Z",
+        "email": "yusimo@yandex.ru",
+        "role": "users",
+        "first_name": "Anonymous",
+        "last_name": "Anonymous",
+        "avatar": "",
+        "phone": null,
         "telegram": null,
         "is_active": true,
         "groups": [],
