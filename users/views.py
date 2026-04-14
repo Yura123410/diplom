@@ -79,9 +79,12 @@ class UserPasswordChangeView(PasswordChangeView):
     }
 
 
-def user_logout_view(request):
-    logout(request)
-    return redirect('sights:index')
+class UserLogoutView(LogoutView):
+    template_name = 'users/user_logout.html'
+    extra_context = {
+        'title': 'Выход из аккаунта'
+    }
+
 
 
 @login_required(login_url='users:user_login')

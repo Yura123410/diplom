@@ -1,0 +1,26 @@
+{% extends 'sights/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card" style="background: rgba(255,255,255,0.95); padding: 2rem; border-radius: 15px;">
+            <div class="text-center mb-4">
+                <h2 class="mb-4" style="color: #1a252f; font-weight: 700;">Вы успешно вышли из Вашего аккаунта</h2>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    Спасибо за использование нашего сервиса
+                </div>
+            </div>
+
+            <div class="card-body text-center">
+                <div class="mt-4 text-center">
+                    <a href="{% url 'users:user_login' %}" class="btn btn-primary" style="padding: 8px 25px; border-radius: 25px;">
+                        Нажмите сюда для повторного входа
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

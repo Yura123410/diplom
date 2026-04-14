@@ -46,6 +46,27 @@
             color: #ffd700 !important;
         }
 
+        /* Стили для кнопки выхода */
+        .logout-button {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font: inherit;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            transform: translateX(5px);
+            color: #ffd700 !important;
+            text-decoration: none;
+        }
+
         .navbar-custom {
             background: rgba(44, 62, 80, 0.95) !important;
         }
@@ -216,8 +237,13 @@
                         <li class="mb-2"><a href="{% url 'users:user_profile' %}"
                                             class="text-white text-decoration-none">Профиль</a>
                         </li>
-                        <li class="mb-2"><a href="{% url 'users:user_logout' %}"
-                                            class="text-white text-decoration-none">Выход</a>
+                        <li class="mb-2">
+                            <form method="post" action="{% url 'users:user_logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-button text-white text-decoration-none">
+                                    Выход
+                                </button>
+                            </form>
                         </li>
                         {% else %}
                         <li class="mb-2"><a href="{% url 'users:user_login' %}" class="text-white text-decoration-none">Вход</a>
