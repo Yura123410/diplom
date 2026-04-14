@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 
 from sights.forms import SightForm, CategoryForm
@@ -9,18 +10,20 @@ from sights.models import Sight, Category
 
 def index(request):
     context = {
-        'objects': Category.objects.all()[:3],
+        'object_list': Category.objects.all()[:3],
         'title': 'Мурманск - Главная',
     }
     return render(request, 'sights/index.html', context)
 
 
-def sight_list(request):
-    context = {
-        'objects_list': Sight.objects.all(),
-        'title': 'Все достопримечательности',
+class SightsListView(ListView):
+    model = Sight
+    extra_context = {
+        'title': 'Питомник все наши собаки'
     }
-    return render(request, 'sights/sight_list.html', context)
+
+    template_name = 'sights/sights.html'
+
 
 @login_required(login_url='users:user_login')
 def sight_detail(request, pk: int):
@@ -30,6 +33,7 @@ def sight_detail(request, pk: int):
         'title': sight.name,
     }
     return render(request, 'sights/sights_detail.html', context)
+
 
 @login_required(login_url='users:user_login')
 def sight_create_view(request):
@@ -77,7 +81,7 @@ def sights_delete_view(request, pk):
 
 def category_list(request):
     context = {
-        'objects_list': Category.objects.all(),
+        'object_list': Category.objects.all(),
         'title': 'Категории',
     }
     return render(request, 'sights/category_list.html', context)
