@@ -1,5 +1,5 @@
 from django.urls import path
-from sights.views import index, SightsListView, sight_detail, sight_create_view, sights_update_view, sights_delete_view, \
+from sights.views import index, SightsListView, sight_detail, SightsCreateView, sights_update_view, sights_delete_view, \
     category_list, category_detail, category_create_view
 from sights.apps import SightsConfig
 
@@ -10,7 +10,7 @@ urlpatterns = [
     # sights
     path('sights/', SightsListView.as_view(), name='sight_list'),
     path('sights/<int:pk>/', sight_detail, name='sight_detail'),
-    path('sights/create/', sight_create_view, name='sight_create'),
+    path('sights/create/', SightsCreateView.as_view(), name='sight_create'),
     path('sights/update/<int:pk>/', sights_update_view, name='sights_update'),
     path('sights/delete/<int:pk>/', sights_delete_view, name='sights_delete'),
 

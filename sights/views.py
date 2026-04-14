@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 
@@ -34,19 +34,31 @@ def sight_detail(request, pk: int):
     }
     return render(request, 'sights/sights_detail.html', context)
 
-
-@login_required(login_url='users:user_login')
-def sight_create_view(request):
-    if request.method == 'POST':
-        form = SightForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('sights:index'))
-    context = {
-        'title': 'Добавить достопримечательность',
-        'form': SightForm()
+class SightsCreateView(CreateView):
+    model = Sight
+    form_class = SightForm
+    template_name = 'sights/sights_update_create.html'
+    extra_context = {
+        'title': 'Добавить достопримечательность'
     }
-    return render(request, 'sights/sights_update_create.html', context)
+    success_url = reverse_lazy('sights:index')
+
+
+
+
+
+# @login_required(login_url='users:user_login')
+# def sight_create_view(request):
+#     if request.method == 'POST':
+#         form = SightForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('sights:index'))
+#     context = {
+#         'title': 'Добавить достопримечательность',
+#         'form': SightForm()
+#     }
+#     return render(request, 'sights/sights_update_create.html', context)
 
 
 @login_required(login_url='users:user_login')
