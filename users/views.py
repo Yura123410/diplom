@@ -86,7 +86,6 @@ class UserLogoutView(LogoutView):
     }
 
 
-
 @login_required(login_url='users:user_login')
 def user_generate_new_password_view(request):
     new_password = ''.join(random.sample(string.ascii_letters + string.digits, k=12))
