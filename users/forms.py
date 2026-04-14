@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm, AuthenticationForm
 from users.models import User
 from users.validators import validate_password
 
@@ -17,9 +17,8 @@ class UserRegisterForm(UserCreationForm):
         return cleaned_data['password2']
 
 
-class UserLoginForm(forms.Form):
-    email = forms.EmailField(label='email')
-    password = forms.CharField(label='пароль', widget=forms.PasswordInput)
+class UserLoginForm(AuthenticationForm):
+    pass
 
 
 class UserForm(forms.ModelForm):
