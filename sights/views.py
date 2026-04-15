@@ -24,6 +24,7 @@ class SightsListView(ListView):
 
     template_name = 'sights/sights.html'
 
+
 class SightsDetailView(DetailView):
     model = Sight
     template_name = 'sights/sights_detail.html'
@@ -33,15 +34,6 @@ class SightsDetailView(DetailView):
         sight_object = self.get_object()
         context_data['title'] = f'Подробная информация\n{sight_object}'
         return context_data
-
-# @login_required(login_url='users:user_login')
-# def sight_detail(request, pk: int):
-#     sight = get_object_or_404(Sight, pk=pk)
-#     context = {
-#         'sight': sight,
-#         'title': sight.name,
-#     }
-#     return render(request, 'sights/sights_detail.html', context)
 
 
 class SightsCreateView(CreateView):
@@ -54,34 +46,60 @@ class SightsCreateView(CreateView):
     success_url = reverse_lazy('sights:index')
 
 
-@login_required(login_url='users:user_login')
-def sights_update_view(request, pk):
-    sight_object = get_object_or_404(Sight, pk=pk)
-    if request.method == 'POST':
-        form = SightForm(request.POST, request.FILES, instance=sight_object)
-        if form.is_valid():
-            sight_object = form.save()
-            sight_object.save()
-            return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk,)))
-    context = {
-        'title': 'Изменить достопримечательность',
-        'object': sight_object,
-        'form': SightForm(instance=sight_object)
-    }
-    return render(request, 'sights/sights_update_create.html', context)
+class SightsUpdateView(UpdateView):
+    model = Sight
+    template_name = 'sights/sights_update_create.html'
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        sight_object = self.get_object()
+        context_data['title'] = f'Изменить\n{sight_object}'
+        return context_data
+
+    def get_success_url(self):
+        return reverse('sights:sight_detail', args=[self.kwargs.get('pk')])
 
 
-@login_required(login_url='users:user_login')
-def sights_delete_view(request, pk):
-    sight_object = get_object_or_404(Sight, pk=pk)
-    if request.method == 'POST':
-        sight_object.delete()
-        return HttpResponseRedirect(reverse('sights:sight_list'))
-    context = {
-        'title': 'Удалить достопримечательность',
-        'object': sight_object,
-    }
-    return render(request, 'sights/sights_delete.html', context)
+# @login_required(login_url='users:user_login')
+# def sights_update_view(request, pk):
+#     sight_object = get_object_or_404(Sight, pk=pk)
+#     if request.method == 'POST':
+#         form = SightForm(request.POST, request.FILES, instance=sight_object)
+#         if form.is_valid():
+#             sight_object = form.save()
+#             sight_object.save()
+#             return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk,)))
+#     context = {
+#         'title': 'Изменить достопримечательность',
+#         'object': sight_object,
+#         'form': SightForm(instance=sight_object)
+#     }
+#     return render(request, 'sights/sights_update_create.html', context)
+
+class SightsDeleteView(DeleteView):
+    model = Sight
+    template_name = 'sights/sights_delete.html'
+    success_url = reverse_lazy('sights:sight_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        sight_object = self.get_object()
+        context_data['title'] = f'Удалить\n{sight_object}'
+        return context_data
+
+
+# @login_required(login_url='users:user_login')
+# def sights_delete_view(request, pk):
+#     sight_object = get_object_or_404(Sight, pk=pk)
+#     if request.method == 'POST':
+#         sight_object.delete()
+#         return HttpResponseRedirect(reverse('sights:sight_list'))
+#     context = {
+#         'title': 'Удалить достопримечательность',
+#         'object': sight_object,
+#     }
+#     return render(request, 'sights/sights_delete.html', context)
 
 
 def category_list(request):
