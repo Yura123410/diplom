@@ -24,15 +24,25 @@ class SightsListView(ListView):
 
     template_name = 'sights/sights.html'
 
+class SightsDetailView(DetailView):
+    model = Sight
+    template_name = 'sights/sights_detail.html'
 
-@login_required(login_url='users:user_login')
-def sight_detail(request, pk: int):
-    sight = get_object_or_404(Sight, pk=pk)
-    context = {
-        'sight': sight,
-        'title': sight.name,
-    }
-    return render(request, 'sights/sights_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        sight_object = self.get_object()
+        context_data['title'] = f'Подробная информация\n{sight_object}'
+        return context_data
+
+# @login_required(login_url='users:user_login')
+# def sight_detail(request, pk: int):
+#     sight = get_object_or_404(Sight, pk=pk)
+#     context = {
+#         'sight': sight,
+#         'title': sight.name,
+#     }
+#     return render(request, 'sights/sights_detail.html', context)
+
 
 class SightsCreateView(CreateView):
     model = Sight
@@ -42,23 +52,6 @@ class SightsCreateView(CreateView):
         'title': 'Добавить достопримечательность'
     }
     success_url = reverse_lazy('sights:index')
-
-
-
-
-
-# @login_required(login_url='users:user_login')
-# def sight_create_view(request):
-#     if request.method == 'POST':
-#         form = SightForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('sights:index'))
-#     context = {
-#         'title': 'Добавить достопримечательность',
-#         'form': SightForm()
-#     }
-#     return render(request, 'sights/sights_update_create.html', context)
 
 
 @login_required(login_url='users:user_login')
