@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 
 from sights.forms import SightForm, CategoryForm
 from sights.models import Sight, Category
@@ -36,7 +38,7 @@ class SightsDetailView(DetailView):
         return context_data
 
 
-class SightsCreateView(CreateView):
+class SightsCreateView(LoginRequiredMixin, CreateView):
     model = Sight
     form_class = SightForm
     template_name = 'sights/sights_update_create.html'
@@ -46,7 +48,7 @@ class SightsCreateView(CreateView):
     success_url = reverse_lazy('sights:index')
 
 
-class SightsUpdateView(UpdateView):
+class SightsUpdateView(LoginRequiredMixin, UpdateView):
     model = Sight
     template_name = 'sights/sights_update_create.html'
     fields = '__all__'
@@ -57,27 +59,17 @@ class SightsUpdateView(UpdateView):
         context_data['title'] = f'Изменить\n{sight_object}'
         return context_data
 
+    def get_object(self, queryset=None):
+        sight_object = super().get_object(queryset)
+        if self.request.user and not self.request.user.is_staff:
+            raise Http404
+        return sight_object
+
     def get_success_url(self):
         return reverse('sights:sight_detail', args=[self.kwargs.get('pk')])
 
 
-# @login_required(login_url='users:user_login')
-# def sights_update_view(request, pk):
-#     sight_object = get_object_or_404(Sight, pk=pk)
-#     if request.method == 'POST':
-#         form = SightForm(request.POST, request.FILES, instance=sight_object)
-#         if form.is_valid():
-#             sight_object = form.save()
-#             sight_object.save()
-#             return HttpResponseRedirect(reverse('sights:sight_detail', args=(pk,)))
-#     context = {
-#         'title': 'Изменить достопримечательность',
-#         'object': sight_object,
-#         'form': SightForm(instance=sight_object)
-#     }
-#     return render(request, 'sights/sights_update_create.html', context)
-
-class SightsDeleteView(DeleteView):
+class SightsDeleteView(LoginRequiredMixin, DeleteView):
     model = Sight
     template_name = 'sights/sights_delete.html'
     success_url = reverse_lazy('sights:sight_list')
@@ -87,19 +79,6 @@ class SightsDeleteView(DeleteView):
         sight_object = self.get_object()
         context_data['title'] = f'Удалить\n{sight_object}'
         return context_data
-
-
-# @login_required(login_url='users:user_login')
-# def sights_delete_view(request, pk):
-#     sight_object = get_object_or_404(Sight, pk=pk)
-#     if request.method == 'POST':
-#         sight_object.delete()
-#         return HttpResponseRedirect(reverse('sights:sight_list'))
-#     context = {
-#         'title': 'Удалить достопримечательность',
-#         'object': sight_object,
-#     }
-#     return render(request, 'sights/sights_delete.html', context)
 
 
 def category_list(request):
