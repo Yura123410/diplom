@@ -1,5 +1,4 @@
 from django import forms
-
 from sights.models import Sight, Category
 
 

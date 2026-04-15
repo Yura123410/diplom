@@ -2,10 +2,12 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card" style="background: rgba(255,255,255,0.95); padding: 2rem; border-radius: 15px;">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+
+                <!-- Основная форма -->
                 {% for field in form %}
                 <div class="form-group mb-3">
                     <label style="font-weight: 500; color: #333;">
@@ -21,6 +23,64 @@
                     {% endfor %}
                 </div>
                 {% endfor %}
+
+                <hr>
+
+                <!-- Форма для фотогалереи -->
+                <h4 class="mt-4 mb-3">Фотогалерея</h4>
+                <p class="text-muted mb-3">Добавьте дополнительные фотографии достопримечательности</p>
+
+                {{ photo_formset.management_form }}
+
+                <div id="photo-formset">
+                    {% for form in photo_formset %}
+                    <div class="photo-form mb-4 p-3 border rounded" style="background: #f8f9fa;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% for field in form %}
+                                    {% if field.name != 'DELETE' and field.name != 'ORDER' %}
+                                    <div class="form-group mb-3">
+                                        <label style="font-weight: 500; color: #333;">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                        <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                {% if form.instance.pk and form.instance.image %}
+                                <div class="current-photo text-center">
+                                    <label>Текущее фото:</label>
+                                    <img src="{{ form.instance.image.url }}"
+                                         class="img-fluid rounded mt-2"
+                                         style="max-height: 150px; border: 1px solid #ddd; padding: 5px;">
+                                    {% if form.DELETE %}
+                                    <div class="form-check mt-2">
+                                        {{ form.DELETE }}
+                                        <label class="form-check-label text-danger">
+                                            Удалить это фото
+                                        </label>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if form.ORDER %}
+                        <div style="display: none;">
+                            {{ form.ORDER }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="btn btn-secondary mb-3" id="add-photo-btn"
+                        style="background: #6c757d; color: white; padding: 8px 25px; border-radius: 25px; border: none;">
+                    + Добавить еще фото
+                </button>
 
                 <div class="mt-4">
                     <button type="submit" class="btn" style="background: #667eea; color: white; padding: 8px 25px; border-radius: 25px; border: none; transition: all 0.3s ease;">Сохранить</button>
@@ -54,5 +114,50 @@
     .btn:hover {
         transform: translateY(-2px);
     }
+
+    .photo-form {
+        transition: all 0.3s ease;
+    }
+
+    .photo-form:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Добавление новых форм для фото
+    const addButton = document.getElementById('add-photo-btn');
+    const formsetContainer = document.getElementById('photo-formset');
+    const totalForms = document.getElementById('id_photos-TOTAL_FORMS');
+
+    if (addButton && formsetContainer && totalForms) {
+        addButton.addEventListener('click', function() {
+            const formNum = parseInt(totalForms.value);
+            const newForm = formsetContainer.children[0].cloneNode(true);
+
+            // Очищаем значения в новой форме
+            newForm.querySelectorAll('input, textarea, select').forEach(function(input) {
+                const name = input.getAttribute('name');
+                if (name && !name.includes('DELETE')) {
+                    input.value = '';
+                    if (name.includes('-')) {
+                        input.name = name.replace(/-\d+-/, `-${formNum}-`);
+                        input.id = input.id.replace(/-\d+-/, `-${formNum}-`);
+                    }
+                }
+            });
+
+            // Убираем текущее фото
+            const currentPhotoDiv = newForm.querySelector('.current-photo');
+            if (currentPhotoDiv) {
+                currentPhotoDiv.remove();
+            }
+
+            formsetContainer.appendChild(newForm);
+            totalForms.value = formNum + 1;
+        });
+    }
+});
+</script>
 {% endblock %}

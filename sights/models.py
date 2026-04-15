@@ -23,10 +23,9 @@ class Sight(models.Model):
     address = models.CharField(verbose_name='Адрес', max_length=300)
     image = models.ImageField(verbose_name='Изображение', upload_to='sights/', **NULLABLE)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, **NULLABLE)
-    opening_hours = models.CharField(verbose_name='Часы работы', max_length=200,default='Не указано', **NULLABLE)
-    ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100,default='Не указано', **NULLABLE)
+    opening_hours = models.CharField(verbose_name='Часы работы', max_length=200, default='Не указано', **NULLABLE)
+    ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100, default='Не указано', **NULLABLE)
     views_count = models.IntegerField(verbose_name='Просмотры', default=0)
-
 
     def __str__(self):
         return self.name
@@ -35,3 +34,16 @@ class Sight(models.Model):
         verbose_name = 'Достопримечательность'
         verbose_name_plural = 'Достопримечательности'
         ordering = ['name']
+
+
+class SightPhoto(models.Model):
+    sight = models.ForeignKey(Sight, on_delete=models.CASCADE, verbose_name='Достопримечательность',
+                              related_name='photos')
+    image = models.ImageField(verbose_name='Фотография', upload_to='sights/gallery/')
+
+    class Meta:
+        verbose_name = 'Фотография'
+        verbose_name_plural = 'Фотогалерея'
+
+    def __str__(self):
+        return f"Фото {self.sight.name}"

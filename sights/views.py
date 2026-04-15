@@ -1,13 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
+from django.contrib import messages
 
 from sights.forms import SightForm, CategoryForm
-from sights.models import Sight, Category
+from sights.models import Sight, Category, SightPhoto
 
 
 def index(request):
@@ -21,9 +22,8 @@ def index(request):
 class SightsListView(ListView):
     model = Sight
     extra_context = {
-        'title': 'Питомник все наши собаки'
+        'title': 'Все достопримечательности'
     }
-
     template_name = 'sights/sights.html'
 
 
@@ -32,9 +32,12 @@ class SightsDetailView(DetailView):
     template_name = 'sights/sights_detail.html'
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data()
+        context_data = super().get_context_data(**kwargs)
         sight_object = self.get_object()
         context_data['title'] = f'Подробная информация\n{sight_object}'
+
+        context_data['gallery_photos'] = sight_object.photos.all()
+
         return context_data
 
 
@@ -113,3 +116,30 @@ def category_detail(request, pk: int):
         'title': category.name,
     }
     return render(request, 'sights/category_detail.html', context)
+
+
+# Работа с галереей
+@login_required
+def add_photo(request, pk):
+    sight = get_object_or_404(Sight, pk=pk)
+
+    if request.method == 'POST' and request.FILES.get('photo'):
+        SightPhoto.objects.create(
+            sight=sight,
+            image=request.FILES['photo']
+        )
+        messages.success(request, 'Фото добавлено!')
+
+    return redirect('sights:sight_detail', pk=pk)
+
+
+@login_required
+def delete_photo(request, pk):
+    photo = get_object_or_404(SightPhoto, pk=pk)
+    sight_pk = photo.sight.pk
+
+    if request.user.is_staff:
+        photo.delete()
+        messages.success(request, 'Фото удалено!')
+
+    return redirect('sights:sight_detail', pk=sight_pk)

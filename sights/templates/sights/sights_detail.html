@@ -15,15 +15,66 @@
                         <div class="card-body">
                             <h3 class="card-title">{{ sight.name|title }}</h3>
                             <p class="card-text"><strong>Категория:</strong> {{ sight.category|default:"-" }}</p>
-                            <p class="card-text"><strong>Полное описание:</strong> {{ sight.full_description|default:"Без описания" }}</p>
+                            <p class="card-text"><strong>Полное описание:</strong> {{
+                                sight.full_description|default:"Без описания" }}</p>
                             <p class="card-text"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</p>
-                            <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не указано" }}</p>
-                            <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</p>
+                            <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не
+                                указано" }}</p>
+                            <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не
+                                указано" }}</p>
                             <p class="card-text"><strong>Просмотры:</strong> {{ sight.views_count }}</p>
                         </div>
                     </div>
-
                 </div>
+
+                <!-- Фотогалерея -->
+                {% if gallery_photos %}
+                <div class="row g-0 mt-3">
+                    <div class="col-12">
+                        <div class="card-body">
+                            <h4>Фотогалерея</h4>
+                            <div class="row">
+                                {% for photo in gallery_photos %}
+                                <div class="col-md-3 mb-3">
+                                    <img src="{{ photo.image.url }}"
+                                         class="img-fluid rounded gallery-img"
+                                         alt="Фото {{ forloop.counter }}"
+                                         data-index="{{ forloop.counter0 }}"
+                                         style="cursor: pointer; height: 150px; width: 100%; object-fit: cover;"
+                                         onclick="openPhoto({{ forloop.counter0 }})">
+                                    {% if user.is_staff %}
+                                    <div class="mt-2">
+                                        <a href="{% url 'sights:delete_photo' photo.pk %}"
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Удалить фото?')">
+                                            Удалить
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Форма для добавления фото -->
+                {% if user.is_staff %}
+                <div class="row g-0 mt-2">
+                    <div class="col-12">
+                        <div class="card-body">
+                            <form method="post" action="{% url 'sights:add_photo' sight.pk %}"
+                                  enctype="multipart/form-data" class="d-flex gap-2">
+                                {% csrf_token %}
+                                <input type="file" name="photo" accept="image/*" required class="form-control">
+                                <button type="submit" class="btn btn-primary">Добавить фото</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     <div>
                         <a class="btn btn-primary" href="{% url 'sights:category' sight.category.pk %}">Назад</a>
@@ -37,5 +88,108 @@
         </div>
     </div>
 </div>
+
+<!-- Модальное окно фото -->
+<div id="modal"
+     style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9);">
+    <span onclick="closeModal()"
+          style="position:absolute; top:20px; right:35px; color:white; font-size:40px; cursor:pointer;">&times;</span>
+
+    <button onclick="prevPhoto()"
+            style="position:absolute; left:20px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.6); color:white; border:none; font-size:30px; cursor:pointer; padding:15px 20px; border-radius:50%;">
+        ❮
+    </button>
+
+    <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+        <img id="modalImg" style="max-width:90%; max-height:90%; object-fit:contain;">
+    </div>
+
+    <button onclick="nextPhoto()"
+            style="position:absolute; right:20px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.6); color:white; border:none; font-size:30px; cursor:pointer; padding:15px 20px; border-radius:50%;">
+        ❯
+    </button>
+
+    <div id="counter"
+         style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); color:white; padding:5px 15px; border-radius:20px;"></div>
+</div>
+
+<script>
+    // Массив с URL фото
+    var photos = [
+        {% for photo in gallery_photos %}
+        "{{ photo.image.url }}",
+        {% endfor %}
+    ];
+
+    var currentIndex = 0;
+
+    // Открыть фото
+    function openPhoto(index) {
+        if (photos.length === 0) return;
+        currentIndex = index;
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('modalImg').src = photos[currentIndex];
+        document.getElementById('counter').innerHTML = (currentIndex + 1) + ' / ' + photos.length;
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Закрыть окно
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Предыдущее фото
+    function prevPhoto() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            document.getElementById('modalImg').src = photos[currentIndex];
+            document.getElementById('counter').innerHTML = (currentIndex + 1) + ' / ' + photos.length;
+        }
+    }
+
+    // Следующее фото
+    function nextPhoto() {
+        if (currentIndex < photos.length - 1) {
+            currentIndex++;
+            document.getElementById('modalImg').src = photos[currentIndex];
+            document.getElementById('counter').innerHTML = (currentIndex + 1) + ' / ' + photos.length;
+        }
+    }
+
+    // Закрытие по ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+        if (e.key === 'ArrowLeft') {
+            prevPhoto();
+        }
+        if (e.key === 'ArrowRight') {
+            nextPhoto();
+        }
+    });
+
+    // Убираем овал при фокусе на кнопках
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('button');
+        buttons.forEach(function(btn) {
+            btn.style.outline = 'none';
+            btn.addEventListener('focus', function() {
+                this.style.outline = 'none';
+            });
+        });
+    });
+</script>
+
+<style>
+    .gallery-img {
+        transition: transform 0.3s;
+    }
+    .gallery-img:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+</style>
 
 {% endblock %}
