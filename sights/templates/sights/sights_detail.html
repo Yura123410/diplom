@@ -47,7 +47,7 @@
                                         <a href="{% url 'sights:delete_photo' photo.pk %}"
                                            class="btn btn-sm btn-danger"
                                            onclick="return confirm('Удалить фото?')">
-                                            Удалить
+                                            Удалить фото
                                         </a>
                                     </div>
                                     {% endif %}
@@ -78,10 +78,10 @@
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     <div>
                         <a class="btn btn-primary" href="{% url 'sights:category' sight.category.pk %}">Назад</a>
+                        {% if user.is_staff %}
                         <a class="btn btn-primary" href="{% url 'sights:sights_update' sight.pk %}">Изменить</a>
-                    </div>
-                    <div>
-                        <a class="btn btn-danger" href="{% url 'sights:sights_delete' sight.pk %}">Удалить</a>
+                        <a class="btn btn-danger" href="{% url 'sights:sights_delete' sight.pk %}">Удалить достопримечательность</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
