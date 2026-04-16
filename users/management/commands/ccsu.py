@@ -27,7 +27,7 @@ class Command(BaseCommand):
             },
             'users': {
                 'email': 'users@web.top',
-                'role': 'users',
+                'role': 'user',
                 'first_name': 'User',
                 'last_name': 'Userov',
                 'is_staff': False,
