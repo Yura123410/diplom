@@ -221,6 +221,8 @@
                     <ul class="list-unstyled mt-3">
                         {% if user.role == 'admin' %}
                         <li class="mb-2"><a class="p-1 btn btn-success" href="/admin/">Админка</a></li>
+                        {% endif %}
+                        {% if user.role == 'admin' or user.role == 'moderator' %}
                         <li class="mb-2"><a href="{% url 'sights:sight_create' %}"
                                             class="text-white text-decoration-none">Добавить достопримечательность</a>
                         </li>
