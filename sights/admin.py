@@ -11,6 +11,7 @@ class SightAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'address', 'views_count','created_at']
     list_filter = ['category','created_at']
     readonly_fields = ['views_count']
+    exclude = ('views_count',)
     fieldsets = (
         ('Основная информация', {
             'fields': ('name', 'category', 'short_description', 'full_description')
@@ -25,3 +26,4 @@ class SightAdmin(admin.ModelAdmin):
             'fields': ('opening_hours', 'ticket_price', 'views_count')
         }),
     )
+

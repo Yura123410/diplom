@@ -31,13 +31,24 @@ class SightsDetailView(DetailView):
     model = Sight
     template_name = 'sights/sights_detail.html'
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # Проверка на модератора/админа
+        is_moderator = (request.user.is_authenticated and
+                        (request.user.is_staff or request.user.is_superuser))
+
+        # Увеличиваем просмотр только для обычных пользователей
+        if not is_moderator:
+            self.object.increment_views()
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        sight_object = self.get_object()
-        context_data['title'] = f'Подробная информация\n{sight_object}'
-
-        context_data['gallery_photos'] = sight_object.photos.all()
-
+        context_data['title'] = f'Подробная информация\n{self.object}'
+        context_data['gallery_photos'] = self.object.photos.all()
         return context_data
 
 

@@ -25,10 +25,15 @@ class Sight(models.Model):
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, **NULLABLE)
     opening_hours = models.CharField(verbose_name='Часы работы', max_length=200, default='Не указано', **NULLABLE)
     ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100, default='Не указано', **NULLABLE)
-    views_count = models.IntegerField(verbose_name='Просмотры', default=0)
+    views_count = models.IntegerField(verbose_name='Просмотры', default=0., editable=False)
 
     def __str__(self):
         return self.name
+
+    def increment_views(self):
+
+        self.views_count += 1
+        self.save(update_fields=['views_count'])
 
     class Meta:
         verbose_name = 'Достопримечательность'
