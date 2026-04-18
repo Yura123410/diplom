@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 from users.models import User
@@ -84,6 +85,31 @@ class UserLogoutView(LogoutView):
     extra_context = {
         'title': 'Выход из аккаунта'
     }
+
+
+class UserListView(LoginRequiredMixin, ListView):
+    model = User
+    extra_context = {
+        'title': 'Все наши пользователи'
+    }
+    template_name = 'users/users.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
+
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'users/user_detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        user_object = self.get_object()
+        context_data['title'] = f'Профиль пользователя {user_object}'
+        return context_data
 
 
 @login_required(login_url='users:user_login')

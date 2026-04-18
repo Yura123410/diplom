@@ -1,0 +1,27 @@
+{% load user_tags %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div class="row">
+    {% for object in users %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if object.avatar %}
+                    <img src="{{ object.avatar|user_media }}" class="card-img-top" alt="{{ object.first_name }}" style="height: 320px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ object.first_name }} {{ object.last_name }}</h5>
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li>E-mail: {{ object.email }}</li>
+                        <li>Телефон: {{ object.phone|default:'не указан' }}</li>
+                        <li>Телеграм: {{ object.telegram|default:'не указан' }}</li>
+                    </ul>
+                    <a href="{% url 'users:user_profile_read_only' object.pk %}" class="btn btn-primary">Подробная информация</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Пользователи не найдены</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -236,6 +236,8 @@
                         <li class="mb-2"><a href="{% url 'sights:category_list' %}"
                                             class="text-white text-decoration-none">Категории</a></li>
                         {% if user.is_authenticated %}
+                        <li class="mb-2"><a href="{% url 'users:users_list' %}"
+                                            class="text-white text-decoration-none">Все пользователи</a>
                         <li class="mb-2"><a href="{% url 'users:user_profile' %}"
                                             class="text-white text-decoration-none">Профиль</a>
                         </li>

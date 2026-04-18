@@ -1,0 +1,33 @@
+{% extends 'sights/base.html' %}
+{% load user_tags %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for object in object_list %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if object.avatar %}
+                        <img src="{{ object.avatar|user_media }}" class="card-img-top" alt="{{ object.first_name }}" style="height: 320px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static '8255610.png' %}" class="card-img-top" alt="Default avatar" style="height: 320px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ object.first_name }} {{ object.last_name }}</h5>
+                        <ul class="list-unstyled mt-3 mb-4 text-start">
+                            <li>E-mail: {{ object.email }}</li>
+                            <li>Телефон: {{ object.phone|default:'не указан' }}</li>
+                            <li>Телеграм: {{ object.telegram|default:'не указан' }}</li>
+                        </ul>
+                        <a href="{% url 'users:user_detail' object.pk %}" class="btn btn-primary mt-auto">Подробная информация</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Пользователи не найдены</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
