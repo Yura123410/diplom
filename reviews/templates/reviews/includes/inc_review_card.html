@@ -1,0 +1,25 @@
+<div class="col-4">
+    <div class="card mb-0 box-shadow">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-center">{{ review.sight.name }}</h4>
+        </div>
+        {% if review.sight.image %}
+        <img class="card-img-top"
+             src="{{ review.sight.image.url }}" width="300" height="320"
+             alt="{{ review.sight.name }}">
+        {% else %}
+        <img class="card-img-top"
+             src="/static/images/no-image.jpg" width="300" height="320"
+             alt="Нет фото">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title pricing-card-title">{{ review.title|truncatechars:30 }}</h5>
+            <p class="card-text">{{ review.content|truncatechars:100 }}</p>
+            <ul class="list-unstyled mt-3 mb-3 text-start">
+                <li>Автор: {{ review.author|default:"Аноним" }}</li>
+                <li>Создан: {{ review.created|date:"d.m.Y" }}</li>
+            </ul>
+            <a href="{% url 'reviews:review_detail' review.slug %}" class="btn btn-primary">Подробнее</a>
+        </div>
+    </div>
+</div>

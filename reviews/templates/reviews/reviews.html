@@ -1,0 +1,9 @@
+{% extends 'sights/base.html' %}
+
+{% block content %}
+<div class="row">
+    {% for review in object_list %}
+        {% include 'reviews/includes/inc_review_card.html' with review=review %}
+    {% endfor %}
+</div>
+{% endblock %}
