@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sights/base.html' %}
 
-</body>
-</html>
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card box-shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Удаление отзыва</h4>
+            </div>
+
+            {% if object.sight.image %}
+            <div class="text-center bg-dark">
+                <img class="img-fluid"
+                     src="{{ object.sight.image.url }}"
+                     style="width: 100%; height: auto; max-height: 50vh; object-fit: contain;"
+                     alt="{{ object.sight.name }}">
+            </div>
+            {% else %}
+            <div class="text-center bg-secondary">
+                <img class="img-fluid"
+                     src="/static/images/no-image.jpg"
+                     style="width: 100%; height: auto; max-height: 50vh; object-fit: contain;"
+                     alt="Нет фото">
+            </div>
+            {% endif %}
+
+            <div class="card-body">
+                <h3 class="text-center mb-4">{{ object.title }}</h3>
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">Внимание!</h5>
+                    <p>Вы уверены, что хотите удалить этот отзыв?</p>
+                    <p class="mb-0"><strong>Достопримечательность:</strong> {{ object.sight.name }}</p>
+                    <p><strong>Текст отзыва:</strong> {{ object.content|truncatechars:150 }}</p>
+                </div>
+                <p class="text-muted">
+                    Автор: {{ object.author|default:"Удаленный пользователь" }}<br>
+                    Дата создания: {{ object.created|date:"d.m.Y H:i" }}
+                </p>
+            </div>
+
+            <div class="card-footer">
+                <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Да, удалить
+                    </button>
+                </form>
+                <a href="{% url 'reviews:review_detail' object.slug %}" class="btn btn-secondary">
+                    Отмена
+                </a>
+                <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary float-end">
+                    << Назад к списку
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

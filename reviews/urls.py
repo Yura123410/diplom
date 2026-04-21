@@ -8,10 +8,10 @@ app_name = ReviewsConfig.name
 
 urlpatterns = [
     path('', ReviewListView.as_view(), name='reviews_list'),
-    path('deactivated', ReviewDeactivatedListView.as_view(), name='reviews_deactivated'),
-    path('review/created/', ReviewCreateView.as_view(), name='review_create'),
-    path('review/detail/<slug:slug>/', ReviewDetailView.as_view(), name='review_detail'),
-    path('review/update/<slug:slug>/', ReviewUpdateView.as_view(), name='review_update'),
-    path('review/delete/<slug:slug>/', ReviewDeleteView.as_view(), name='review_delete'),
-    path('review/toggle/<slug:slug>/', review_toggle_activity, name='review_toggle'),
+    path('deactivated/', ReviewDeactivatedListView.as_view(), name='reviews_deactivated'),  # Добавьте слэш
+    path('create/', ReviewCreateView.as_view(), name='review_create'),  # Изменил на create/
+    path('detail/<slug:slug>/', ReviewDetailView.as_view(), name='review_detail'),
+    path('update/<slug:slug>/', ReviewUpdateView.as_view(), name='review_update'),
+    path('delete/<slug:slug>/', ReviewDeleteView.as_view(), name='review_delete'),
+    path('toggle/<slug:slug>/', review_toggle_activity, name='review_toggle'),
 ]

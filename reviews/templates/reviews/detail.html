@@ -1,10 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sights/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ review.title }}</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Фото достопримечательности -->
+                    <div class="mb-3 text-center">
+                        <strong>Фото достопримечательности:</strong>
+                        <div class="mt-2">
+                            {% if review.sight.image %}
+                                <img src="{{ review.sight.image.url }}"
+                                     class="img-fluid rounded"
+                                     alt="{{ review.sight.name }}"
+                                     style="max-width: 100%; max-height: 300px; object-fit: contain;">
+                            {% else %}
+                                <img src="{% static 'images/nophoto.png' %}"
+                                     class="img-fluid rounded"
+                                     alt="Нет фото"
+                                     style="max-width: 100%; max-height: 300px; object-fit: contain;">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Достопримечательность:</strong> {{ review.sight.name }}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Автор:</strong> {{ review.author.first_name|default:review.author.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Оценка:</strong>
+                        <div class="rating-static">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span style="color: #ffd700; font-size: 24px;">★</span>
+                                {% else %}
+                                    <span style="color: #ddd; font-size: 24px;">☆</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="ms-2">({{ review.rating }}/5)</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Текст отзыва:</strong>
+                        <p class="mt-2">{{ review.content|linebreaks }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Дата создания:</strong> {{ review.created|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary"><< Назад к отзывам</a>
+                        <div>
+                            {% if review.author == user and user.role == 'user' %}
+                                <a href="{% url 'reviews:review_update' review.slug %}" class="btn btn-outline-warning">Редактировать</a>
+                                <a href="{% url 'reviews:review_delete' review.slug %}" class="btn btn-outline-danger">Удалить</a>
+                            {% endif %}
+
+                            {% if user.role == 'admin' or user.role == 'moderator' %}
+                                <a href="{% url 'reviews:review_toggle' review.slug %}" class="btn btn-outline-warning">
+                                    {% if review.sign_of_review %}Деактивировать{% else %}Активировать{% endif %}
+                                </a>
+                            {% endif %}
+
+                            {% if user.role == 'admin' %}
+                                <a href="{% url 'reviews:review_delete' review.slug %}" class="btn btn-outline-danger">Удалить</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

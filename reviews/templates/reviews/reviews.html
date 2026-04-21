@@ -1,9 +1,45 @@
 {% extends 'sights/base.html' %}
 
 {% block content %}
-<div class="row">
-    {% for review in object_list %}
-        {% include 'reviews/includes/inc_review_card.html' with review=review %}
-    {% endfor %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>{{ title }}</h1>
+                <div>
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'user' %}
+                            <a href="{% url 'reviews:review_create' %}" class="btn btn-outline-primary">+ Добавить отзыв</a>
+                        {% else %}
+                            <button class="btn btn-outline-secondary" disabled title="Администраторы и модераторы не могут оставлять отзывы">
+                                Только для пользователей!
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'users:user_login' %}?next={% url 'reviews:review_create' %}" class="btn btn-outline-secondary">
+                            Войдите, чтобы оставить отзыв
+                        </a>
+                    {% endif %}
+
+                    {% if user.role == 'admin' or user.role == 'moderator' %}
+                        <a href="{% url 'reviews:reviews_deactivated' %}" class="btn btn-outline-secondary">Неактивные отзывы</a>
+                        <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-success">Активные отзывы</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for review in reviews %}
+            {% include 'reviews/includes/inc_review_card.html' with review=review %}
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Пока нет отзывов. Будьте первым, кто оставит отзыв!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

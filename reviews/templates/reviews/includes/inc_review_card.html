@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="col-4">
     <div class="card mb-0 box-shadow">
         <div class="card-header">
@@ -5,21 +7,70 @@
         </div>
         {% if review.sight.image %}
         <img class="card-img-top"
-             src="{{ review.sight.image.url }}" width="300" height="320"
+             src="{{ review.sight.image.url }}"
+             width="300"
+             height="320"
              alt="{{ review.sight.name }}">
         {% else %}
         <img class="card-img-top"
-             src="/static/images/no-image.jpg" width="300" height="320"
+             src="{% static 'images/nophoto.png' %}"
+             width="300"
+             height="320"
              alt="Нет фото">
         {% endif %}
         <div class="card-body">
             <h5 class="card-title pricing-card-title">{{ review.title|truncatechars:30 }}</h5>
+
+            <!-- Отображение звезд рейтинга -->
+            <div class="rating-static mb-2">
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= review.rating %}
+                        <span style="color: #ffd700; font-size: 20px;">★</span>
+                    {% else %}
+                        <span style="color: #ddd; font-size: 20px;">☆</span>
+                    {% endif %}
+                {% endfor %}
+                <span class="ms-2 text-muted">({{ review.rating }}/5)</span>
+            </div>
+
             <p class="card-text">{{ review.content|truncatechars:100 }}</p>
             <ul class="list-unstyled mt-3 mb-3 text-start">
-                <li>Автор: {{ review.author|default:"Аноним" }}</li>
+                <li>Автор: {{ review.author.first_name|default:review.author.email }}</li>
                 <li>Создан: {{ review.created|date:"d.m.Y" }}</li>
+                {% if review.author.role == 'user' %}
+                    <li><span class="badge bg-info">Пользователь</span></li>
+                {% endif %}
             </ul>
-            <a href="{% url 'reviews:review_detail' review.slug %}" class="btn btn-primary">Подробнее</a>
+
+            {% if review.slug %}
+                <a class="btn btn-lg btn-block btn-outline-info"
+                   href="{% url 'reviews:review_detail' review.slug %}">Подробнее</a>
+
+                {% if review.author == user and user.role == 'user' %}
+                    <a class="btn btn-lg btn-block btn-outline-warning mt-2"
+                       href="{% url 'reviews:review_update' review.slug %}">Изменить отзыв</a>
+                    <a class="btn btn-lg btn-block btn-outline-danger mt-2"
+                       href="{% url 'reviews:review_delete' review.slug %}">Удалить отзыв</a>
+                {% endif %}
+
+                <!-- Кнопки для модератора и администратора -->
+                {% if user.role == 'admin' or user.role == 'moderator' %}
+                    <a class="btn btn-lg btn-block btn-outline-warning mt-2"
+                       href="{% url 'reviews:review_toggle' review.slug %}">
+                        {% if review.sign_of_review %}
+                            Деактивировать
+                        {% else %}
+                            Активировать
+                        {% endif %}
+                    </a>
+                {% endif %}
+
+                <!-- Только администратор может удалять любые отзывы -->
+                {% if user.role == 'admin' %}
+                    <a class="btn btn-lg btn-block btn-outline-danger mt-2"
+                       href="{% url 'reviews:review_delete' review.slug %}">Удалить отзыв</a>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
