@@ -1,5 +1,6 @@
 {% extends 'sights/base.html' %}
 {% load sights_tags %}
+{% load static %}
 {% block content %}
 
 <div class="container">
@@ -8,8 +9,13 @@
             <div class="card mb-4 box-shadow">
                 <div class="row g-0">
                     <div class="col-md-5">
-                        <img src="{{ sight.image|sights_media }}" class="img-fluid rounded-start" alt="{{ sight.name }}"
-                             style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+                        {% if sight.image %}
+                            <img src="{{ sight.image|sights_media }}" class="img-fluid rounded-start" alt="{{ sight.name }}"
+                                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+                        {% else %}
+                            <img src="{% static 'images/nophoto.png' %}" class="img-fluid rounded-start" alt="Нет изображения"
+                                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+                        {% endif %}
                     </div>
                     <div class="col-md-7">
                         <div class="card-body">

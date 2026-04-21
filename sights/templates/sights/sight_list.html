@@ -7,17 +7,17 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100 box-shadow mt-3">
             {% if object.image %}
-            <img class="card-img-top"
-                src="{{ object.image.url }}"
-                width="300"
-                height="320"
-                alt="{{ object.name }}">
+                <img class="card-img-top"
+                     src="{{ object.image.url }}"
+                     width="300"
+                     height="320"
+                     alt="{{ object.name }}">
             {% else %}
-            <img class="card-img-top"
-                src="{% static 'images/nophoto.png' %}"
-                width="300"
-                height="320"
-                alt="Нет изображения">
+                <img class="card-img-top"
+                     src="{% static 'images/nophoto.png' %}"
+                     width="300"
+                     height="320"
+                     alt="Нет изображения">
             {% endif %}
             <div class="card-body">
                 <p class="card-text">{{ object.name|title }}</p>

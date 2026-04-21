@@ -1,5 +1,6 @@
 {% extends 'sights/base.html' %}
 {% load sights_tags %}
+{% load static %}
 
 {% block content %}
 <h1>{{ title }}</h1>
@@ -9,15 +10,19 @@
     {% for sight in sights %}
     <div class="col-md-4 mb-4">
         <div class="card">
-            <img src="{{ sight.image|sights_media }}" class="card-img-top" alt="{{ sight.name }}">
+            {% if sight.image %}
+                <img src="{{ sight.image|sights_media }}" class="card-img-top" alt="{{ sight.name }}"
+                     style="height: 200px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'images/nophoto.png' %}" class="card-img-top" alt="Нет изображения"
+                     style="height: 200px; object-fit: cover;">
+            {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ sight.name }}</h5>
                 <a href="{% url 'sights:sight_detail' sight.pk %}" class="btn btn-primary">Подробнее</a>
             </div>
         </div>
-
     </div>
-
     {% empty %}
     <p>В этой категории пока нет достопримечательностей</p>
     {% endfor %}
