@@ -36,7 +36,7 @@
         "created_at": "2026-03-26T21:49:33.569Z",
         "opening_hours": "Круглосуточно",
         "ticket_price": "Бесплатно",
-        "views_count": 0
+        "views_count": 2
     }
 },
 {
@@ -68,7 +68,7 @@
         "created_at": "2026-03-27T19:14:20.768Z",
         "opening_hours": null,
         "ticket_price": null,
-        "views_count": 1
+        "views_count": 5
     }
 },
 {
@@ -84,7 +84,7 @@
         "created_at": "2026-03-27T19:21:53.443Z",
         "opening_hours": "с 09:00 до 20:00",
         "ticket_price": null,
-        "views_count": 0
+        "views_count": 3
     }
 },
 {
@@ -116,7 +116,7 @@
         "created_at": "2026-04-14T22:06:13.803Z",
         "opening_hours": "Не указано",
         "ticket_price": "Не указано",
-        "views_count": 7
+        "views_count": 84
     }
 },
 {
@@ -132,7 +132,7 @@
         "created_at": "2026-04-15T19:31:08.773Z",
         "opening_hours": "Не указано",
         "ticket_price": "Не указано",
-        "views_count": 0
+        "views_count": 14
     }
 },
 {
@@ -149,6 +149,110 @@
     "fields": {
         "sight": 14,
         "image": "sights/gallery/2026/04/pervyy-v-mire-atomny.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 3,
+    "fields": {
+        "sight": 14,
+        "image": "sights/gallery/18_legenda_lenin.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 5,
+    "fields": {
+        "sight": 1,
+        "image": "sights/gallery/arbo5293.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 6,
+    "fields": {
+        "sight": 1,
+        "image": "sights/gallery/6818356_xlarge.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 7,
+    "fields": {
+        "sight": 1,
+        "image": "sights/gallery/472096e6-99f4-4bee-803e-2f0db7920a3c.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 8,
+    "fields": {
+        "sight": 1,
+        "image": "sights/gallery/25-1.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 9,
+    "fields": {
+        "sight": 2,
+        "image": "sights/gallery/large.88efaef69e332b530cdfbb4105d7cab7.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 11,
+    "fields": {
+        "sight": 2,
+        "image": "sights/gallery/large.c447d8be0d076a4ec9c0d3381d631da2.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 12,
+    "fields": {
+        "sight": 2,
+        "image": "sights/gallery/large.2378f73b596e747a26a47cc2b049fc0d.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 13,
+    "fields": {
+        "sight": 2,
+        "image": "sights/gallery/large_GlSfwNj.98436343497cfdc0d8ca1a67c05bfffc.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 14,
+    "fields": {
+        "sight": 3,
+        "image": "sights/gallery/large.0d1b9de340060a8e5053f83549691cb8.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 15,
+    "fields": {
+        "sight": 3,
+        "image": "sights/gallery/large.dedbb71cad8c8e8c8b01fec044ab5f07.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 16,
+    "fields": {
+        "sight": 3,
+        "image": "sights/gallery/97_big.jpg"
+    }
+},
+{
+    "model": "sights.sightphoto",
+    "pk": 17,
+    "fields": {
+        "sight": 3,
+        "image": "sights/gallery/1461061.jpg"
     }
 }
 ]
