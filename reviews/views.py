@@ -12,6 +12,8 @@ from reviews.models import Review
 from reviews.utils import generate_slug
 from users.models import UserRoles
 
+from sights.models import Sight
+
 
 class ReviewListView(ListView):
     model = Review
@@ -73,7 +75,36 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
             messages.error(request, 'Только обычные пользователи могут оставлять отзывы')
             return redirect('reviews:reviews_list')
 
+        # Проверяем, передан ли sight в GET параметрах
+        sight_id = request.GET.get('sight')
+        if not sight_id:
+            messages.error(request, 'Не выбрана достопримечательность для отзыва')
+            return redirect('sights:index')
+
+        # Проверяем, существует ли такая достопримечательность
+        try:
+            self.selected_sight = Sight.objects.get(pk=sight_id)
+        except Sight.DoesNotExist:
+            messages.error(request, 'Выбранная достопримечательность не найдена')
+            return redirect('sights:index')
+
         return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Предзаполняем поле sight выбранной достопримечательностью
+        if hasattr(self, 'selected_sight'):
+            initial['sight'] = self.selected_sight
+            # Опционально: предзаполняем заголовок
+            initial['title'] = f'Отзыв о {self.selected_sight.name}'
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Передаем выбранную достопримечательность в шаблон
+        if hasattr(self, 'selected_sight'):
+            context['selected_sight'] = self.selected_sight
+        return context
 
     def form_valid(self, form):
         if self.request.user.role != UserRoles.USER:
@@ -83,13 +114,17 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         review_object = form.save(commit=False)
         review_object.author = self.request.user
 
+        # Устанавливаем sight из выбранного
+        if hasattr(self, 'selected_sight'):
+            review_object.sight = self.selected_sight
+
         # Генерируем slug, если его нет
         if not review_object.slug or review_object.slug == 'temp_slug':
             from reviews.utils import generate_slug
             review_object.slug = generate_slug()
 
         review_object.save()
-        messages.success(self.request, 'Отзыв успешно создан!')
+        messages.success(self.request, f'Отзыв о {review_object.sight.name} успешно создан!')
         return super().form_valid(form)
 
     def form_invalid(self, form):

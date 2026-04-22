@@ -45,3 +45,10 @@ class ReviewForm(forms.ModelForm):
         labels = {
             'sight': 'Достопримечательность',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Если передан initial для sight, делаем поле disabled
+        if self.initial.get('sight'):
+            self.fields['sight'].widget.attrs['disabled'] = 'disabled'
+            self.fields['sight'].required = False

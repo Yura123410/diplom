@@ -35,6 +35,17 @@ class Sight(models.Model):
         self.views_count += 1
         self.save(update_fields=['views_count'])
 
+    def average_rating(self):
+        """Средний рейтинг достопримечательности"""
+        ratings = self.reviews.filter(sign_of_review=True).exclude(rating__isnull=True).values_list('rating', flat=True)
+        if ratings:
+            return round(sum(ratings) / len(ratings), 1)
+        return 0
+
+    def reviews_count(self):
+        """Количество активных отзывов"""
+        return self.reviews.filter(sign_of_review=True).count()
+
     class Meta:
         verbose_name = 'Достопримечательность'
         verbose_name_plural = 'Достопримечательности'

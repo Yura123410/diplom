@@ -1,6 +1,7 @@
 {% extends 'sights/base.html' %}
 {% load sights_tags %}
 {% load static %}
+
 {% block content %}
 
 <div class="container">
@@ -10,27 +11,74 @@
                 <div class="row g-0">
                     <div class="col-md-5">
                         {% if sight.image %}
-                            <img src="{{ sight.image|sights_media }}" class="img-fluid rounded-start" alt="{{ sight.name }}"
-                                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+                        <img src="{{ sight.image|sights_media }}" class="img-fluid rounded-start" alt="{{ sight.name }}"
+                             style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
                         {% else %}
-                            <img src="{% static 'images/nophoto.png' %}" class="img-fluid rounded-start" alt="Нет изображения"
-                                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
+                        <img src="{% static 'images/nophoto.png' %}" class="img-fluid rounded-start"
+                             alt="Нет изображения"
+                             style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
                         {% endif %}
                     </div>
                     <div class="col-md-7">
                         <div class="card-body">
                             <h3 class="card-title">{{ sight.name|title }}</h3>
+
+                            <!-- БЛОК РЕЙТИНГА -->
+                            <div class="mb-3 p-2 bg-light rounded">
+                                <strong>Рейтинг:</strong>
+                                {% with avg_rating=sight.average_rating %}
+                                {% if avg_rating > 0 %}
+                                <span>
+                                            {% for i in "12345"|make_list %}
+                                                {% if forloop.counter <= avg_rating %}
+                                                    <span class="star-filled">★</span>
+                                                {% elif forloop.counter <= avg_rating|add:0.5 %}
+                                                    <span class="star-half">½</span>
+                                                {% else %}
+                                                    <span class="star-empty">☆</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                <span class="rating-value">({{ avg_rating }}/5)</span>
+                                {% else %}
+                                <span class="text-muted">Нет оценок</span>
+                                <br>
+                                <small class="text-muted">Будьте первым, кто оценит!</small>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                            <!-- КОНЕЦ БЛОКА РЕЙТИНГА -->
+
                             <p class="card-text"><strong>Категория:</strong> {{ sight.category|default:"-" }}</p>
                             <p class="card-text"><strong>Полное описание:</strong> {{ sight.full_description|default:"Без описания" }}</p>
                             <p class="card-text"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</p>
                             <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не указано" }}</p>
                             <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</p>
                             <p class="card-text"><strong>Просмотры:</strong> {{ sight.views_count }}</p>
+
+                            <!-- Кнопка добавления отзыва -->
+                            <div class="mt-3">
+                                {% if user.is_authenticated and user.role == 'user' %}
+                                <a href="{% url 'reviews:review_create' %}?sight={{ sight.pk }}"
+                                   class="btn btn-outline-primary">
+                                    + Оставить отзыв
+                                </a>
+                                {% elif user.is_authenticated and user.role != 'user' %}
+                                <button class="btn btn-outline-secondary" disabled
+                                        title="Только пользователи могут оставлять отзывы">
+                                    Только для пользователей
+                                </button>
+                                {% else %}
+                                <a href="{% url 'users:user_login' %}?next={% url 'reviews:review_create' %}?sight={{ sight.pk }}"
+                                   class="btn btn-outline-secondary">
+                                    Войдите, чтобы оставить отзыв
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Фотогалерея -->
+                    <!-- Фотогалерея -->
                 {% if gallery_photos %}
                 <div class="row g-0 mt-3">
                     <div class="col-12">
@@ -83,10 +131,58 @@
                         <a class="btn btn-primary" href="{% url 'sights:category' sight.category.pk %}">Назад</a>
                         {% if user.is_staff %}
                         <a class="btn btn-primary" href="{% url 'sights:sights_update' sight.pk %}">Изменить</a>
-                        <a class="btn btn-danger" href="{% url 'sights:sights_delete' sight.pk %}">Удалить достопримечательность</a>
+                        <a class="btn btn-danger" href="{% url 'sights:sights_delete' sight.pk %}">Удалить
+                            достопримечательность</a>
                         {% endif %}
                     </div>
                 </div>
+                <!-- БЛОК ОТЗЫВОВ -->
+                <div class="row g-0 mt-3">
+                    <div class="col-12">
+                        <div class="card-body">
+                            <h4>Отзывы ({{ sight.reviews_count }})</h4>
+                            {% with reviews=sight.reviews.all %}
+                            {% if reviews %}
+                            {% for review in reviews %}
+                            {% if review.sign_of_review %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h5>{{ review.title }}</h5>
+                                            <div class="mb-2">
+                                                {% for i in "12345"|make_list %}
+                                                {% if forloop.counter <= review.rating %}
+                                                <span class="star-filled">★</span>
+                                                {% else %}
+                                                <span class="star-empty">☆</span>
+                                                {% endif %}
+                                                {% endfor %}
+                                                <span class="rating-value">({{ review.rating }}/5)</span>
+                                            </div>
+                                            <p>{{ review.content|truncatechars:200 }}</p>
+                                            <small class="text-muted">
+                                                Автор: {{ review.author|default:"Аноним" }} |
+                                                Дата: {{ review.created|date:"d.m.Y H:i" }}
+                                            </small>
+                                        </div>
+                                        <a href="{% url 'reviews:review_detail' review.slug %}"
+                                           class="btn btn-sm btn-outline-primary ms-3">Подробнее</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <p class="text-muted">Пока нет отзывов. Будьте первым!</p>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                <!-- КОНЕЦ БЛОКА ОТЗЫВОВ -->
+
+
             </div>
         </div>
     </div>
@@ -126,7 +222,6 @@
 
     var currentIndex = 0;
 
-    // Открыть фото
     function openPhoto(index) {
         if (photos.length === 0) return;
         currentIndex = index;
@@ -136,13 +231,11 @@
         document.body.style.overflow = 'hidden';
     }
 
-    // Закрыть окно
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
-    // Предыдущее фото
     function prevPhoto() {
         if (currentIndex > 0) {
             currentIndex--;
@@ -151,7 +244,6 @@
         }
     }
 
-    // Следующее фото
     function nextPhoto() {
         if (currentIndex < photos.length - 1) {
             currentIndex++;
@@ -160,28 +252,10 @@
         }
     }
 
-    // Закрытие по ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-        if (e.key === 'ArrowLeft') {
-            prevPhoto();
-        }
-        if (e.key === 'ArrowRight') {
-            nextPhoto();
-        }
-    });
-
-    // Убираем овал при фокусе на кнопках
-    document.addEventListener('DOMContentLoaded', function() {
-        var buttons = document.querySelectorAll('button');
-        buttons.forEach(function(btn) {
-            btn.style.outline = 'none';
-            btn.addEventListener('focus', function() {
-                this.style.outline = 'none';
-            });
-        });
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') prevPhoto();
+        if (e.key === 'ArrowRight') nextPhoto();
     });
 </script>
 
@@ -193,6 +267,10 @@
         transform: scale(1.05);
         cursor: pointer;
     }
+    .star-filled { color: #ffc107; }
+    .star-empty { color: #e4e5e9; }
+    .star-half { color: #ffc107; }
+    .rating-value { font-size: 0.9rem; color: #6c757d; margin-left: 5px; }
 </style>
 
 {% endblock %}

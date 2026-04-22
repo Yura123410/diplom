@@ -24,6 +24,29 @@
                         </div>
                         {% endif %}
 
+                        <!-- Информация о достопримечательности -->
+                        {% if selected_sight %}
+                        <div class="alert alert-info mb-4">
+                            <div class="d-flex align-items-center">
+                                {% if selected_sight.image %}
+                                <img src="{{ selected_sight.image.url }}"
+                                     alt="{{ selected_sight.name }}"
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                                     class="me-3">
+                                {% else %}
+                                <div class="bg-secondary me-3"
+                                     style="width: 80px; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="text-white">Нет фото</span>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <h5 class="mb-1">{{ selected_sight.name }}</h5>
+                                    <p class="mb-0 text-muted">{{ selected_sight.short_description|truncatechars:100 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
                         {% for field in form %}
                         {% if field.name != 'slug' %}
                         <div class="mb-3">
@@ -55,7 +78,11 @@
                             <button type="submit" class="btn btn-outline-success">
                                 {% if object %}Сохранить{% else %}Добавить отзыв{% endif %}
                             </button>
+                            {% if selected_sight %}
+                            <a href="{% url 'sights:sight_detail' selected_sight.pk %}" class="btn btn-outline-secondary">Отмена</a>
+                            {% else %}
                             <a href="{% url 'reviews:reviews_list' %}" class="btn btn-outline-primary">Отмена</a>
+                            {% endif %}
                         </div>
                     </form>
                 </div>
@@ -87,6 +114,5 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 {% endblock %}
