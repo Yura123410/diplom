@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
 from django.contrib import messages
+from django.db.models import Q
+from unicodedata import category
 
 from sights.forms import SightForm, CategoryForm
 from sights.models import Sight, Category, SightPhoto
@@ -180,3 +182,23 @@ class DeletePhotoView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         # Блокируем GET-запросы (удаление только через POST)
         return redirect('sights:sight_detail', pk=self.get_object().sight.pk)
+
+
+class AllSearchListView(ListView):
+    model = Sight
+    template_name = 'sights/all_search_results.html'
+
+    extra_context = {
+        'title': 'Результаты поискового запроса'
+    }
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        sight_object_list = Sight.objects.filter(
+            Q(name__icontains=query)
+        )
+        category_object_list = Category.objects.filter(
+            Q(name__icontains=query)
+        )
+        object_list = list(sight_object_list) + list(category_object_list)
+        return object_list

@@ -296,6 +296,7 @@
                         <li class="mb-2"><a href="{% url 'sights:category_create' %}"
                                             class="text-white text-decoration-none">Добавить категорию</a></li>
                         {% endif %}
+                        {% include 'sights/includes/inc_search_fields.html' %}
                         <li class="mb-2"><a href="{% url 'sights:index' %}" class="text-white text-decoration-none">Главная</a>
                         </li>
                         <li class="mb-2"><a href="{% url 'sights:sight_list' %}"

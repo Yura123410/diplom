@@ -1,6 +1,6 @@
 from django.urls import path
 from sights.views import index, SightsListView, SightsDetailView, SightsCreateView, SightsUpdateView, SightsDeleteView, \
-    CategoryListView, CategoryDetailView, CategoryCreateView, AddPhotoView, DeletePhotoView
+    CategoryListView, CategoryDetailView, CategoryCreateView, AddPhotoView, DeletePhotoView, AllSearchListView
 from sights.apps import SightsConfig
 from django.views.decorators.cache import cache_page, never_cache
 
@@ -8,6 +8,7 @@ app_name = SightsConfig.name
 
 urlpatterns = [
     path('', cache_page(60)(index), name='index'),
+    path('all_search', AllSearchListView.as_view(), name='all_search'),
     # sights
     path('sights/', cache_page(60)(SightsListView.as_view()), name='sight_list'),
     path('sights/<int:pk>/', SightsDetailView.as_view(), name='sight_detail'),

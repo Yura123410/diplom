@@ -1,0 +1,80 @@
+{% extends 'sights/base.html' %}
+{% block content %}
+
+<div class="search-results">
+    <h2 class="mb-4">Результаты поиска</h2>
+
+    {% if object_list %}
+        <div class="list-group">
+            {% for object in object_list %}
+                {# Определяем тип по наличию поля category (у достопримечательности есть связь с категорией) #}
+                {% if object.category %}
+                    {# Это достопримечательность #}
+                    <a href="{% url 'sights:sight_detail' object.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">🏛 {{ object.name }}</h5>
+                            <small>Достопримечательность</small>
+                        </div>
+                        {% if object.description %}
+                            <p class="mb-1">{{ object.description|truncatewords:20 }}</p>
+                        {% endif %}
+                    </a>
+                {% else %}
+                    {# Это категория #}
+                    <a href="{% url 'sights:category' object.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">📁 {{ object.name }}</h5>
+                            <small>Категория</small>
+                        </div>
+                        {% if object.description %}
+                            <p class="mb-1">{{ object.description|truncatewords:20 }}</p>
+                        {% endif %}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <h4>Ничего не найдено 😔</h4>
+            <p>Попробуйте изменить поисковый запрос</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .search-results {
+        padding: 20px 0;
+    }
+
+    .list-group-item {
+        margin-bottom: 10px;
+        border-radius: 10px !important;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item-action:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+        text-decoration: none;
+    }
+
+    h5 {
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .list-group-item-action:hover h5 {
+        color: #667eea;
+    }
+
+    .alert {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+    }
+
+    small {
+        color: #6c757d;
+    }
+</style>
+
+{% endblock %}
