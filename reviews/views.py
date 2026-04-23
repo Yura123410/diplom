@@ -23,6 +23,8 @@ class ReviewListView(ListView):
     }
     template_name = 'reviews/reviews.html'
 
+    paginate_by = 2
+
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(sign_of_review=True)

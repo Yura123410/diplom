@@ -1,6 +1,6 @@
 from django.urls import path
 from sights.views import index, SightsListView, SightsDetailView, SightsCreateView, SightsUpdateView, SightsDeleteView, \
-    category_list, category_detail, category_create_view, add_photo, delete_photo
+    CategoryListView, CategoryDetailView, CategoryCreateView, AddPhotoView, DeletePhotoView
 from sights.apps import SightsConfig
 from django.views.decorators.cache import cache_page, never_cache
 
@@ -16,11 +16,11 @@ urlpatterns = [
     path('sights/delete/<int:pk>/', SightsDeleteView.as_view(), name='sights_delete'),
 
     # gallery
-    path('sights/<int:pk>/add-photo/', add_photo, name='add_photo'),
-    path('sights/photo/delete/<int:pk>/', delete_photo, name='delete_photo'),
+    path('sights/<int:pk>/add-photo/', AddPhotoView.as_view(), name='add_photo'),
+    path('sights/photo/delete/<int:pk>/', DeletePhotoView.as_view(), name='delete_photo'),
 
     # category
-    path('category/create/', never_cache(category_create_view), name='category_create'),
-    path('category/', cache_page(60)(category_list), name='category_list'),
-    path('category/<int:pk>/', category_detail, name='category'),
+    path('category/create/', never_cache(CategoryCreateView.as_view()), name='category_create'),
+    path('category/', cache_page(60)(CategoryListView.as_view()), name='category_list'),
+    path('category/<int:pk>/', CategoryDetailView.as_view(), name='category'),
 ]

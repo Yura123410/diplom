@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, View
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
 from django.contrib import messages
 
@@ -25,6 +25,8 @@ class SightsListView(ListView):
         'title': 'Все достопримечательности'
     }
     template_name = 'sights/sights.html'
+
+    paginate_by = 6
 
 
 class SightsDetailView(DetailView):
@@ -95,62 +97,86 @@ class SightsDeleteView(LoginRequiredMixin, DeleteView):
         return context_data
 
 
-def category_list(request):
-    context = {
-        'object_list': Category.objects.all(),
-        'title': 'Категории',
-    }
-    return render(request, 'sights/category_list.html', context)
+class CategoryListView(ListView):
+    model = Category
+    context_object_name = 'object_list'
+    extra_context = {'title': 'Категории'}
+    template_name = 'sights/category_list.html'
+
+    paginate_by = 3
 
 
-@login_required(login_url='users:user_login')
-def category_create_view(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('sights:index'))
-    context = {
-        'title': 'Добавить категорию',
-        'form': CategoryForm()
-    }
-    return render(request, 'sights/category_create.html', context)
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    login_url = 'users:user_login'
+    success_url = reverse_lazy('sights:index')
+    template_name = 'sights/category_create.html'
 
 
-def category_detail(request, pk: int):
-    category = get_object_or_404(Category, pk=pk)
-    sights = Sight.objects.filter(category=category)
 
-    context = {
-        'category': category,
-        'sights': sights,
-        'title': category.name,
-    }
-    return render(request, 'sights/category_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавить категорию'
+        return context
+
+
+class CategoryDetailView(DetailView):
+    model = Category
+    context_object_name = 'category'
+    template_name = 'sights/category_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sights'] = Sight.objects.filter(category=self.object)
+        context['title'] = self.object.name
+        return context
 
 
 # Работа с галереей
-@login_required
-def add_photo(request, pk):
-    sight = get_object_or_404(Sight, pk=pk)
+class AddPhotoView(LoginRequiredMixin, View):
+    login_url = 'users:user_login'
 
-    if request.method == 'POST' and request.FILES.get('photo'):
-        SightPhoto.objects.create(
-            sight=sight,
-            image=request.FILES['photo']
-        )
-        messages.success(request, 'Фото добавлено!')
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            return self.post(request, *args, **kwargs)
+        return redirect('sights:sight_detail', pk=kwargs['pk'])
 
-    return redirect('sights:sight_detail', pk=pk)
+    def post(self, request, pk):
+        sight = get_object_or_404(Sight, pk=pk)
+
+        photo = request.FILES.get('photo')
+        if photo:
+            SightPhoto.objects.create(sight=sight, image=photo)
+            messages.success(request, 'Фото добавлено!')
+
+        return redirect('sights:sight_detail', pk=pk)
 
 
-@login_required
-def delete_photo(request, pk):
-    photo = get_object_or_404(SightPhoto, pk=pk)
-    sight_pk = photo.sight.pk
+class DeletePhotoView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = SightPhoto
+    login_url = 'users:user_login'
 
-    if request.user.is_staff:
-        photo.delete()
+    def test_func(self):
+        # Только staff могут удалять фото
+        return self.request.user.is_staff
+
+    def get_success_url(self):
+        # После удаления возвращаемся на страницу достопримечательности
+        return reverse_lazy('sights:sight_detail', kwargs={'pk': self.object.sight.pk})
+
+    def delete(self, request, *args, **kwargs):
+        # Получаем объект до удаления
+        self.object = self.get_object()
+        sight_pk = self.object.sight.pk
+
+        # Удаляем
+        self.object.delete()
         messages.success(request, 'Фото удалено!')
 
-    return redirect('sights:sight_detail', pk=sight_pk)
+        # Перенаправляем
+        return redirect('sights:sight_detail', pk=sight_pk)
+
+    def get(self, request, *args, **kwargs):
+        # Блокируем GET-запросы (удаление только через POST)
+        return redirect('sights:sight_detail', pk=self.get_object().sight.pk)
