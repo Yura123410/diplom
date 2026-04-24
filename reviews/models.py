@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import NULLABLE
 from django.contrib.auth import get_user_model
+from .utils import censor_profanity
 
 User = get_user_model()
 
@@ -11,13 +12,19 @@ class Review(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='reviews')
     title = models.CharField(verbose_name='Заголовок', max_length=200)
     content = models.TextField(verbose_name='Содержание')
-    rating = models.IntegerField(verbose_name='Оценка', default=5)  # Убедитесь, что это поле есть
+    rating = models.IntegerField(verbose_name='Оценка', default=5)
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     slug = models.SlugField(verbose_name='URL', unique=True, **NULLABLE)
     sign_of_review = models.BooleanField(verbose_name='Активен', default=True)
 
     def __str__(self):
         return f"{self.title} - {self.author}"
+
+    def save(self, *args, **kwargs):
+        # Очищаем текст от нецензурных слов перед сохранением
+        self.content = censor_profanity(self.content)
+        # Вызываем оригинальный метод save
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Отзыв'

@@ -3,3 +3,4 @@ python-dotenv
 django
 Pillow
 redis
+better-profanity

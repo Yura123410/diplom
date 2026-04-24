@@ -48,7 +48,10 @@ class ReviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Если передан initial для sight, делаем поле disabled
-        if self.initial.get('sight'):
-            self.fields['sight'].widget.attrs['disabled'] = 'disabled'
+        if self.instance and self.instance.pk:
+            # Делаем поле только для чтения, но отправляемым
+            self.fields['sight'].widget.attrs['readonly'] = 'readonly'
             self.fields['sight'].required = False
+            # Убираем disabled если был
+            if 'disabled' in self.fields['sight'].widget.attrs:
+                del self.fields['sight'].widget.attrs['disabled']
