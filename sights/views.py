@@ -1,6 +1,7 @@
 import json
 import urllib.request
 import re
+
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
@@ -10,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
 from django.db.models import Q
 from django.forms import inlineformset_factory
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from sights.forms import SightForm, CategoryForm, SightPhotoForm
 from sights.models import Sight, Category, SightPhoto
@@ -101,8 +103,28 @@ class SightsDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = f'Подробная информация\n{self.object}'
-        context_data['gallery_photos'] = self.object.photos.all()
+
+        # Получаем все фото галереи с сортировкой
+        all_photos = self.object.photos.all().order_by('id')
+
+        # Пагинация для фото (4 фото в ряд, 2 ряда = 8 фото на страницу)
+        photos_per_page = 4
+        paginator = Paginator(all_photos, photos_per_page)
+
+        # Получаем номер страницы из GET параметра
+        page = self.request.GET.get('gallery_page', 1)
+
+        try:
+            gallery_photos = paginator.page(page)
+        except PageNotAnInteger:
+            gallery_photos = paginator.page(1)
+        except EmptyPage:
+            gallery_photos = paginator.page(paginator.num_pages)
+
+        context_data['gallery_photos'] = gallery_photos
+        context_data['photos_per_page'] = photos_per_page
         context_data['yandex_map_api_key'] = getattr(settings, 'YANDEX_GEOCODER_API_KEY', '')
+
         return context_data
 
 
@@ -256,6 +278,10 @@ class DeletePhotoView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_staff
 
+    def get_success_url(self):
+        # Получаем ID достопримечательности и возвращаемся к ней
+        return reverse('sights:sight_detail', kwargs={'pk': self.object.sight.pk})
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         sight_pk = self.object.sight.pk
@@ -264,7 +290,9 @@ class DeletePhotoView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return redirect('sights:sight_detail', pk=sight_pk)
 
     def get(self, request, *args, **kwargs):
-        return redirect('sights:sight_detail', pk=self.get_object().sight.pk)
+        # Блокируем GET-запросы (удаление только через POST)
+        self.object = self.get_object()
+        return redirect('sights:sight_detail', pk=self.object.sight.pk)
 
 
 class AllSearchListView(ListView):
