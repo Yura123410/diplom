@@ -27,11 +27,15 @@ class Sight(models.Model):
     ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100, default='Не указано', **NULLABLE)
     views_count = models.IntegerField(verbose_name='Просмотры', default=0, editable=False)
 
+    # Добавляем поля для карты
+    latitude = models.FloatField(verbose_name='Широта', **NULLABLE, help_text='Например: 68.9707')
+    longitude = models.FloatField(verbose_name='Долгота', **NULLABLE, help_text='Например: 33.0749')
+    map_zoom = models.IntegerField(verbose_name='Масштаб карты', default=15, help_text='От 1 до 19')
+
     def __str__(self):
         return self.name
 
     def increment_views(self):
-
         self.views_count += 1
         self.save(update_fields=['views_count'])
 
