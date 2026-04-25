@@ -28,10 +28,12 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('email', 'first_name', 'last_name', 'phone', 'avatar')
 
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'phone', 'telegram', 'avatar')
+
 
 class UserChangePasswordForm(PasswordChangeForm):
     def clean_new_password2(self):

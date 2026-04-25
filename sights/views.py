@@ -1,13 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, View
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
 from django.contrib import messages
 from django.db.models import Q
-from unicodedata import category
 
 from sights.forms import SightForm, CategoryForm
 from sights.models import Sight, Category, SightPhoto
@@ -39,8 +36,7 @@ class SightsDetailView(DetailView):
         self.object = self.get_object()
 
         # Проверка на модератора/админа
-        is_moderator = (request.user.is_authenticated and
-                        (request.user.is_staff or request.user.is_superuser))
+        is_moderator = (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser))
 
         # Увеличиваем просмотр только для обычных пользователей
         if not is_moderator:
@@ -114,8 +110,6 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     login_url = 'users:user_login'
     success_url = reverse_lazy('sights:index')
     template_name = 'sights/category_create.html'
-
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,5 +1,5 @@
 from django.http import HttpResponseForbidden
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,9 +9,8 @@ from django.contrib import messages
 
 from reviews.forms import ReviewForm
 from reviews.models import Review
-from reviews.utils import generate_slug
+from reviews.utils import censor_profanity  # только то, что нужно на уровне модуля
 from users.models import UserRoles
-
 from sights.models import Sight
 
 
@@ -22,7 +21,6 @@ class ReviewListView(ListView):
         'title': 'Наши отзывы'
     }
     template_name = 'reviews/reviews.html'
-
     paginate_by = 3
 
     def get_queryset(self):
@@ -120,7 +118,9 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         if hasattr(self, 'selected_sight'):
             review_object.sight = self.selected_sight
 
-        # Генерируем slug, если его нет
+        # Цензурируем содержимое отзыва
+        review_object.content = censor_profanity(review_object.content)
+
         if not review_object.slug or review_object.slug == 'temp_slug':
             from reviews.utils import generate_slug
             review_object.slug = generate_slug()
@@ -172,6 +172,14 @@ class ReviewUpdateView(LoginRequiredMixin, UpdateView):
         review_object = self.get_object()
         context_data['title'] = f'Изменить отзыв: {review_object.sight.name}'
         return context_data
+
+    def form_valid(self, form):
+        review_object = form.save(commit=False)
+        # Цензурируем содержимое при редактировании
+        review_object.content = censor_profanity(review_object.content)
+        review_object.save()
+        messages.success(self.request, 'Отзыв успешно обновлен!')
+        return super().form_valid(form)
 
 
 class ReviewDeleteView(LoginRequiredMixin, DeleteView):

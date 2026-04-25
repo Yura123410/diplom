@@ -8,9 +8,7 @@ class SightForm(forms.ModelForm):
         exclude = ('views_count',)
 
 
-
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = '__all__'
-
