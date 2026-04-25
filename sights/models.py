@@ -21,16 +21,20 @@ class Sight(models.Model):
     short_description = models.TextField(verbose_name='Краткое описание', max_length=500)
     full_description = models.TextField(verbose_name='Полное описание')
     address = models.CharField(verbose_name='Адрес', max_length=300)
+    website = models.URLField(
+        verbose_name='Официальный сайт',
+        **NULLABLE,  # Уже содержит blank=True, null=True
+        help_text='Например: https://example.com'
+    )
     image = models.ImageField(verbose_name='Изображение', upload_to='sights/', **NULLABLE)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, **NULLABLE)
     opening_hours = models.CharField(verbose_name='Часы работы', max_length=200, default='Не указано', **NULLABLE)
     ticket_price = models.CharField(verbose_name='Стоимость билета', max_length=100, default='Не указано', **NULLABLE)
     views_count = models.IntegerField(verbose_name='Просмотры', default=0, editable=False)
 
-    # Добавляем поля для карты
-    latitude = models.FloatField(verbose_name='Широта', **NULLABLE, help_text='Например: 68.9707')
-    longitude = models.FloatField(verbose_name='Долгота', **NULLABLE, help_text='Например: 33.0749')
-    map_zoom = models.IntegerField(verbose_name='Масштаб карты', default=15, help_text='От 1 до 19')
+    # Поля для карты - используем только **NULLABLE, без дополнительных аргументов
+    latitude = models.FloatField(verbose_name='Широта', **NULLABLE)
+    longitude = models.FloatField(verbose_name='Долгота', **NULLABLE)
 
     def __str__(self):
         return self.name

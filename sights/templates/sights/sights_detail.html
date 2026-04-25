@@ -52,6 +52,13 @@
                             <p class="card-text"><strong>Категория:</strong> {{ sight.category|default:"-" }}</p>
                             <p class="card-text"><strong>Полное описание:</strong> {{ sight.full_description|default:"Без описания" }}</p>
                             <p class="card-text"><strong>Адрес:</strong> {{ sight.address|default:"Не указано" }}</p>
+                            {% if sight.website %}
+                            <p class="card-text"><strong>Официальный сайт:</strong>
+                                <a href="{{ sight.website }}" target="_blank" rel="noopener noreferrer">
+                                    {{ sight.website }}
+                                </a>
+                            </p>
+                            {% endif %}
                             <p class="card-text"><strong>Часы работы:</strong> {{ sight.opening_hours|default:"Не указано" }}</p>
                             <p class="card-text"><strong>Стоимость билета:</strong> {{ sight.ticket_price|default:"Не указано" }}</p>
                             <p class="card-text"><strong>Просмотры:</strong> {{ sight.views_count }}</p>
@@ -108,9 +115,12 @@
                                          onclick="openPhoto({{ forloop.counter0 }})">
                                     {% if user.is_staff %}
                                     <div class="mt-2">
-                                        <form method="post" action="{% url 'sights:delete_photo' photo.pk %}" style="display: inline;">
+                                        <form method="post" action="{% url 'sights:delete_photo' photo.pk %}"
+                                              style="display: inline;">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить фото?')">Удалить фото</button>
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Удалить фото?')">Удалить фото
+                                            </button>
                                         </form>
                                     </div>
                                     {% endif %}

@@ -12,6 +12,7 @@ class SightForm(forms.ModelForm):
             'short_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'full_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'opening_hours': forms.TextInput(attrs={'class': 'form-control'}),
             'ticket_price': forms.TextInput(attrs={'class': 'form-control'}),
@@ -22,12 +23,14 @@ class SightForm(forms.ModelForm):
             'short_description': 'Краткое описание',
             'full_description': 'Полное описание',
             'address': 'Адрес',
+            'website': 'Официальный сайт',
             'image': 'Главное изображение',
             'opening_hours': 'Часы работы',
             'ticket_price': 'Стоимость билета',
         }
         help_texts = {
             'address': 'Введите полный адрес достопримечательности',
+            'website': 'Например: https://example.com (оставьте пустым, если нет сайта)',
             'opening_hours': 'Например: Пн-Вс 10:00-18:00',
             'ticket_price': 'Например: 500 руб. или Бесплатно',
         }
