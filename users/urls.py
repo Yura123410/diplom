@@ -1,5 +1,6 @@
 from django.urls import path
 
+from django.views.generic import TemplateView
 from users.apps import UsersConfig
 from users.views import UserRegisterView, UserLoginView, UserProfileView, UserLogoutView, UserUpdateView, \
     UserPasswordChangeView, user_generate_new_password_view, UserListView, UserDetailView
@@ -19,4 +20,7 @@ urlpatterns = [
     # Просмотр других пользователей
     path('all_users/', UserListView.as_view(), name='users_list'),
     path('user/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
+
+    # Страница пользовательского соглашения
+    path('terms/', TemplateView.as_view(template_name='users/terms_of_service.html'), name='terms_of_service'),
 ]
